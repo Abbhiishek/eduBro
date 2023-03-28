@@ -12,8 +12,7 @@ class _homePageState extends State<homePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-        theme: ThemeData(primarySwatch: Colors.blue),
-
+        theme: ThemeData(primarySwatch: Colors.indigo),
         home: Scaffold(
           appBar: AppBar(
             title: const Text("eduBro"),
