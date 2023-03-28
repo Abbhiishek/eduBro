@@ -1,16 +1,6 @@
-# cr
+# eduBro
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<H4>Branches : </H4>
+<li>mainstream : the stable stream/branch of the application</li>
+<li>auth : user data and firebase stuffs</li>
+<li>content : content will be updated in this branch</li>
