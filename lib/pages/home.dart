@@ -20,7 +20,7 @@ class _homePageState extends State<homePage> {
           body: Container(
               child: curInd == 0 ? Column(
                 children: const [
-                  Text("Hey Anonymous 👋",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20,wordSpacing: 5)),
+                  Text("Hey Aman 👋",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20,wordSpacing: 5)),
                 ],
               )
                   : curInd == 1 ? Column(
