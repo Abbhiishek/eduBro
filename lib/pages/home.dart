@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import './HomePage.dart';
 class homePage extends StatefulWidget {
   homePage({Key? key}) : super(key: key);
   @override
@@ -18,11 +18,7 @@ class _homePageState extends State<homePage> {
             title: const Text("eduBro"),
           ),
           body: Container(
-              child: curInd == 0 ? Column(
-                children: const [
-                  Text("Hey Aman 👋",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20,wordSpacing: 5)),
-                ],
-              )
+              child: curInd == 0 ? HomePage()
                   : curInd == 1 ? Column(
                 children: const [
                   Text("Lessons",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20))
