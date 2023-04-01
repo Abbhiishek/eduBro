@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,10 +11,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-
     final now = DateTime.now();
-    final currentTimeOfDay = now.hour < 12 ? 'morning' : now.hour < 18 ? 'afternoon' : 'evening';
-    final username = 'Abhishek Kushwaha';
+    final currentTimeOfDay = now.hour < 12
+        ? 'Morning'
+        : now.hour < 18
+            ? 'Afternoon'
+            : 'Evening';
+    // Get the user from the stream
+    final user = FirebaseAuth.instance.currentUser;
+    final username = user?.displayName ?? 'User';
 
     return Scaffold(
       body: Column(
@@ -33,7 +38,24 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
             ),
-          ),// Add some spacing
+          ), // Add some spacing
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${user?.email}',
+                style: TextStyle(fontSize: 10),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(width: 2),
+              Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                semanticLabel: "Verified",
+              ),
+            ],
+          ),
+          // // Add some spacing
           SizedBox(height: 16), // Add some spacing
           Text(
             'Welcome to my EDUBRO!',
@@ -43,21 +65,8 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 16), // Add some more spacing
           ElevatedButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('App in development'),
-                  content: Text('This app is still in development. Thank you for trying it out!'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('OK'),
-                    ),
-                  ],
-                ),
-              );
+              // switch to the next page
+              Navigator.of(context).pushReplacementNamed('/accountsetup');
             },
             child: Text('Get started'),
           ),
