@@ -13,13 +13,17 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? user = context.watch<User?>();
 
-    final imageUrl = user?.photoURL ?? 'https://i.imgur.com/BoN9kdC.png';
-    final emailVerified = user?.emailVerified ?? false;
-    final lastseen = user?.metadata.lastSignInTime ?? DateTime.now();
-    final name = user?.displayName ?? 'User';
-    final email = user?.email ?? 'Email';
-    final uuid = user?.uid ?? null;
-    final xp = 123;
+    // get the user data from db and store in a variable called userData
+    final userData = db.collection('users').doc(user!.uid).get();
+    print(userData);
+
+    final name = user.displayName ?? 'Name';
+    final email = user.email ?? 'Email';
+    final imageUrl = user.photoURL ?? 'Photo URL';
+    final emailVerified = user.emailVerified;
+    final lastseen = user.metadata.lastSignInTime ?? DateTime.now();
+    const xp = 76;
+
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final String formattedDate = formatter.format(lastseen);
 

@@ -71,27 +71,6 @@ class FirebaseAuthMethods {
         'xp': 0 // New users start with 0 XP
       });
     }
-
-    // await db.collection('users').doc(user.user!.uid).set({
-    //   'uid': user.user!.uid,
-    //   'name': user.user!.displayName,
-    //   'email': user.user!.email,
-    //   'photoUrl': user.user!.photoURL,
-    //   'emailVerified': user.user!.emailVerified,
-    //   'phoneNumber': user.user!.phoneNumber,
-    //   'isAnonymous': user.user!.isAnonymous,
-    //   'lastSeen': user.user!.metadata.lastSignInTime,
-    //   'createdAt': user.user!.metadata.creationTime,
-    //   'current_sem': null,
-    //   'current_year': null,
-    //   'student_id': null,
-    //   'username': user.user!.displayName,
-    //   'date_of_Birth': null,
-    //   'subjects': null,
-    //   'level': 1, // New users start at level 1
-    //   'xp': 0 // New users start with 0 XP
-    // });
-
     return userCredential;
   }
 

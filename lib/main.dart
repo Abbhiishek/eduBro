@@ -8,12 +8,14 @@ import 'pages/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'pages/quizes.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // setPathUrlStrategy();
   runApp(const Land());
 }
 
@@ -40,19 +42,10 @@ class _LandState extends State<Land> {
           debugShowCheckedModeBanner: false,
           title: 'EduBro',
           initialRoute: '/',
-          // home: const AuthWrapper(),
           routes: {
             '/': (context) => const SplashScreen(),
             '/login': (context) => const LoginScreen(),
             '/home': (context) => const HomePage(),
-            '/quiz': (context) => QuizApp(),
-          },
-          onGenerateRoute: (settings) {
-            if (settings.name == '/login') {
-              return MaterialPageRoute(
-                  builder: (context) => const LoginScreen());
-            }
-            return null;
           },
         ));
   }

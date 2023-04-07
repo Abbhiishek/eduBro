@@ -46,6 +46,8 @@ dependencies:
   google_fonts: ^2.1.0
   intl: ^0.17.0
   firebase_messaging: ^14.4.0
+  go_router: ^6.5.5
+  url_strategy: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +76,7 @@ flutter:
     - assets/images/splash.png
     - assets/images/edubro_logo.png
     - assets/images/ic_launcher.png
+    - assets/images/loading_animation.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

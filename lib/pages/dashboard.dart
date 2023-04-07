@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -55,7 +55,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          // // Add some spacing
           const SizedBox(height: 16), // Add some spacing
           const Text(
             'Welcome to my EDUBRO!',
@@ -66,7 +65,6 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton(
             onPressed: () {
               // switch to the next page
-              Navigator.of(context).pushReplacementNamed('/accountsetup');
             },
             child: const Text('Get started'),
           ),

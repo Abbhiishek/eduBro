@@ -13,8 +13,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
     Timer(const Duration(seconds: 3), () {
-      // if user is null, navigate to login page
       Navigator.pushReplacementNamed(context, '/login');
     });
   }
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Image.asset("assets/images/edubro_logo.png")),
+      body: Center(child: Image.asset("assets/images/loading_animation.gif")),
     );
   }
 }
