@@ -28,14 +28,14 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             'Good $currentTimeOfDay,',
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           Center(
             child: Text(
               ' $username!',
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
               textAlign: TextAlign.center,
             ),
           ), // Add some spacing
@@ -44,11 +44,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(
                 '${user?.email}',
-                style: TextStyle(fontSize: 10),
+                style: const TextStyle(fontSize: 10),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(width: 2),
-              Icon(
+              const SizedBox(width: 2),
+              const Icon(
                 Icons.check_circle,
                 color: Colors.green,
                 semanticLabel: "Verified",
@@ -56,19 +56,19 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           // // Add some spacing
-          SizedBox(height: 16), // Add some spacing
-          Text(
+          const SizedBox(height: 16), // Add some spacing
+          const Text(
             'Welcome to my EDUBRO!',
             style: TextStyle(fontSize: 12),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16), // Add some more spacing
+          const SizedBox(height: 16), // Add some more spacing
           ElevatedButton(
             onPressed: () {
               // switch to the next page
               Navigator.of(context).pushReplacementNamed('/accountsetup');
             },
-            child: Text('Get started'),
+            child: const Text('Get started'),
           ),
         ],
       ),

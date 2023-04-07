@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import './HomePage.dart';
-import './Profile.dart';
-import './Lessons.dart';
+import 'profile.dart';
+import 'lessons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class homePage extends StatefulWidget {
-  homePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
-  State<homePage> createState() => _homePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _homePageState extends State<homePage> {
+class _HomePageState extends State<HomePage> {
   int curInd = 0;
   @override
   Widget build(BuildContext context) {
@@ -52,9 +51,9 @@ class _homePageState extends State<homePage> {
                   activeIcon: Icon(Icons.account_circle)),
             ],
             currentIndex: curInd,
-            onTap: (int Index) {
+            onTap: (int _index) {
               setState(() {
-                curInd = Index;
+                curInd = _index;
               });
             },
           ),

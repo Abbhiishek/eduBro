@@ -43,14 +43,64 @@ class FirebaseAuthMethods {
     );
 
     // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    final userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
     // Trigger the authentication flow
+
+    final user = userCredential.user;
+    final userDoc = await db.collection('users').doc(user!.uid).get();
+    // Create a new document for the user with the uid do this only if the user is new
+    if (!userDoc.exists) {
+      await db.collection('users').doc(user.uid).set({
+        'uid': user.uid,
+        'name': user.displayName,
+        'email': user.email,
+        'photoUrl': user.photoURL,
+        'emailVerified': user.emailVerified,
+        'phoneNumber': user.phoneNumber,
+        'isAnonymous': user.isAnonymous,
+        'lastSeen': user.metadata.lastSignInTime,
+        'createdAt': user.metadata.creationTime,
+        'current_sem': null,
+        'current_year': null,
+        'student_id': null,
+        'username': user.displayName,
+        'date_of_Birth': null,
+        'subjects': null,
+        'level': 1, // New users start at level 1
+        'xp': 0 // New users start with 0 XP
+      });
+    }
+
+    // await db.collection('users').doc(user.user!.uid).set({
+    //   'uid': user.user!.uid,
+    //   'name': user.user!.displayName,
+    //   'email': user.user!.email,
+    //   'photoUrl': user.user!.photoURL,
+    //   'emailVerified': user.user!.emailVerified,
+    //   'phoneNumber': user.user!.phoneNumber,
+    //   'isAnonymous': user.user!.isAnonymous,
+    //   'lastSeen': user.user!.metadata.lastSignInTime,
+    //   'createdAt': user.user!.metadata.creationTime,
+    //   'current_sem': null,
+    //   'current_year': null,
+    //   'student_id': null,
+    //   'username': user.user!.displayName,
+    //   'date_of_Birth': null,
+    //   'subjects': null,
+    //   'level': 1, // New users start at level 1
+    //   'xp': 0 // New users start with 0 XP
+    // });
+
+    return userCredential;
   }
 
   // SIGN OUT
   Future<void> signOut(BuildContext context) async {
     try {
       await _auth.signOut();
+      // clear the token
+      await GoogleSignIn().signOut();
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!); // Displaying the error message
     }

@@ -89,7 +89,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
               SizedBox(height: 20),
               Text(
                 'Urgent Assignments',
-                style: GoogleFonts.openSans(
+                style: GoogleFonts.firaCode(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -164,19 +164,19 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 1,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SvgPicture.asset(
-            'assets/icons/book.svg',
-            width: 40,
-            height: 40,
-          ),
-          SizedBox(width: 16),
+          // SvgPicture.asset(
+          //   'assets/icons/book.svg',
+          //   width: 40,
+          //   height: 40,
+          // ),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

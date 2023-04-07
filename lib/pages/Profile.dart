@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../services/firebase.dart';
+
+final db = FirebaseFirestore.instance;
 
 class Profile extends StatelessWidget {
   @override
@@ -16,7 +18,7 @@ class Profile extends StatelessWidget {
     final lastseen = user?.metadata.lastSignInTime ?? DateTime.now();
     final name = user?.displayName ?? 'User';
     final email = user?.email ?? 'Email';
-    final uuid = user?.uid ?? 'UUID';
+    final uuid = user?.uid ?? null;
     final xp = 123;
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final String formattedDate = formatter.format(lastseen);
@@ -26,23 +28,23 @@ class Profile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             CircleAvatar(
-              radius: 70,
+              radius: 75,
               backgroundImage: NetworkImage(imageUrl),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
-              uuid,
-              style: GoogleFonts.openSans(
+              name,
+              style: GoogleFonts.firaMono(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               email,
-              style: GoogleFonts.openSans(
+              style: GoogleFonts.firaMono(
                 fontSize: 16,
               ),
             ),
@@ -50,39 +52,41 @@ class Profile extends StatelessWidget {
             emailVerified
                 ? Text(
                     'Email verified',
-                    style: GoogleFonts.openSans(
+                    style: GoogleFonts.firaMono(
                       fontSize: 16,
                       color: Colors.green,
                     ),
                   )
                 : Text(
                     'Email not verified',
-                    style: GoogleFonts.openSans(
+                    style: GoogleFonts.firaMono(
                       fontSize: 16,
                       color: Colors.red,
                     ),
                   ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 context.read<FirebaseAuthMethods>().signOut(context);
                 Navigator.pushReplacementNamed(context, '/login');
               },
-              child: Text('Log out'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
+                padding: const EdgeInsets.all(16),
               ),
+              child: const Text('Log out'),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             ListTile(
-              leading: SvgPicture.asset(
-                'assets/icons/calendar.svg',
-                width: 25,
+              leading: const Icon(
+                Icons.calendar_today,
+                color: Colors.green,
+                semanticLabel: "Last Seen",
               ),
-              title: Text('Last Seen'),
+              title: const Text('Last Seen'),
               subtitle: Text(formattedDate),
             ),
-            Divider(),
+            const Divider(),
             XpWidget(xp: xp),
           ],
         ),
@@ -117,7 +121,7 @@ class XpWidget extends StatelessWidget {
         children: [
           Text(
             'XP',
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.firaMono(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -128,7 +132,7 @@ class XpWidget extends StatelessWidget {
             children: [
               Text(
                 '$xp',
-                style: GoogleFonts.openSans(
+                style: GoogleFonts.firaMono(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: Colors.blue,
@@ -145,7 +149,7 @@ class XpWidget extends StatelessWidget {
               SizedBox(width: 10),
               Text(
                 '1000 XP',
-                style: GoogleFonts.openSans(
+                style: GoogleFonts.firaMono(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
