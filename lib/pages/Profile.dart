@@ -9,13 +9,15 @@ import '../services/firebase.dart';
 final db = FirebaseFirestore.instance;
 
 class Profile extends StatelessWidget {
+  const Profile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final User? user = context.watch<User?>();
 
     // get the user data from db and store in a variable called userData
     final userData = db.collection('users').doc(user!.uid).get();
-    print(userData);
+    // print(userData);
 
     final name = user.displayName ?? 'Name';
     final email = user.email ?? 'Email';
@@ -72,7 +74,6 @@ class Profile extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 context.read<FirebaseAuthMethods>().signOut(context);
-                Navigator.pushReplacementNamed(context, '/login');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
@@ -86,12 +87,19 @@ class Profile extends StatelessWidget {
                 Icons.calendar_today,
                 color: Colors.green,
                 semanticLabel: "Last Seen",
+                shadows: [
+                  Shadow(
+                    blurRadius: 10.0,
+                    color: Colors.green,
+                    offset: Offset(1.0, 1.0),
+                  ),
+                ],
               ),
               title: const Text('Last Seen'),
               subtitle: Text(formattedDate),
             ),
             const Divider(),
-            XpWidget(xp: xp),
+            // XpWidget(xp: xp),
           ],
         ),
       ),

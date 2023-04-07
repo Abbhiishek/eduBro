@@ -71,6 +71,9 @@ class FirebaseAuthMethods {
         'xp': 0 // New users start with 0 XP
       });
     }
+
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
     return userCredential;
   }
 
@@ -80,6 +83,8 @@ class FirebaseAuthMethods {
       await _auth.signOut();
       // clear the token
       await GoogleSignIn().signOut();
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!); // Displaying the error message
     }

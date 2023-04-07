@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:EduBro/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,9 +12,9 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-Future signInWithGoogle(BuildContext context) async {
-  await context.read<FirebaseAuthMethods>().signInWithGoogle(context);
-}
+// Future signInWithGoogle(BuildContext context) async {
+//   await context.read<FirebaseAuthMethods>().signInWithGoogle(context);
+// }
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
@@ -30,10 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final User? user = context.watch<User?>();
-    // if (user != null) {
-    //   Navigator.pushReplacementNamed(context, '/home');
-    // }
     return Scaffold(
         body: Center(
             child: Column(
@@ -54,9 +51,14 @@ class _LoginScreenState extends State<LoginScreen> {
         ElevatedButton.icon(
           onPressed: () {
             // add your button's functionality here
-            // FirebaseAuthMethods(FirebaseAuth.instance).signInWithGoogle(context);
-            signInWithGoogle(context);
-            Navigator.pushReplacementNamed(context, '/home');
+            FirebaseAuthMethods(FirebaseAuth.instance)
+                .signInWithGoogle(context);
+            // signInWithGoogle(context);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+            );
           },
           label: const Text("Sign With Google"),
           style: ElevatedButton.styleFrom(
@@ -68,6 +70,3 @@ class _LoginScreenState extends State<LoginScreen> {
     )));
   }
 }
-
-// create a fucntion to call the sign in with google method
-
