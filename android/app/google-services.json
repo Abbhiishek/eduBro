@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "495134791302",
+    "project_id": "edubro-4c60a",
+    "storage_bucket": "edubro-4c60a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495134791302:android:c514bf78bb1413c33ce307",
+        "android_client_info": {
+          "package_name": "com.example.edubro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495134791302-smuk3a8udn69jp082pl508983n25roug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.edubro",
+            "certificate_hash": "3bf9636997e9fcee4fee023cd06fe6dd18ade2cb"
+          }
+        },
+        {
+          "client_id": "495134791302-kfsslsj7ojhedvfuvgf7dek88ndd0lbe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD5ClTKqZu3GOX6Ujo6B26eAPePQ6GUmc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "495134791302-214vcqhj51l878fggbvpnc5vq4blb75j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "495134791302-4cbq7klfujp4qp72m9f82h2ue48d6r1c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.edubro"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,53 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'profile.dart';
+import 'lessons.dart';
+import 'dashboard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:EduBro/components/bottom_navigation_bar.dart';
 
-class homePage extends StatefulWidget {
-  homePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
-  State<homePage> createState() => _homePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _homePageState extends State<homePage> {
-  int curInd = 0;
+class _HomePageState extends State<HomePage> {
+  int _curInd = 0;
   @override
   Widget build(BuildContext context) {
+    // get the user from firebase
+    final User? user = context.watch<User?>();
+    // if the user is not present from firebase then navigate to login page
+    if (user == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacementNamed('/login');
+      });
+    }
+    final email = user?.email ?? 'Email';
+    final name = user?.displayName ?? 'Name';
+    final photoURL = user?.photoURL ?? 'Photo URL';
+
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.indigo),
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text("eduBro"),
-          ),
-          body: Container(
-              child: curInd == 0 ? Column(
-                children: const [
-                  Text("Hey Aman 👋",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20,wordSpacing: 5)),
-                ],
+            appBar: AppBar(
+              title: const Text("EduBro"),
+            ),
+            drawer: Drawer(
+                child: ListView(children: [
+              UserAccountsDrawerHeader(
+                accountName: Text(name),
+                accountEmail: Text(email),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  backgroundImage: NetworkImage(photoURL),
+                ),
+                currentAccountPictureSize: const Size(75, 75),
+                arrowColor: Colors.indigoAccent,
               )
-                  : curInd == 1 ? Column(
-                children: const [
-                  Text("Lessons",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20))
-                ],
-              )
-                  : Column(
-                children: const [
-                  Text("Student Profile",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 20))
-                ],
-              )
-
-          ),
-          bottomNavigationBar: BottomNavigationBar(items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home_outlined),label:"Home",activeIcon: Icon(Icons.home)),
-            BottomNavigationBarItem(icon: Icon(Icons.file_copy_outlined),label:"Lessons",activeIcon: Icon(Icons.file_copy)),
-            BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined),label:"Student Profile",activeIcon: Icon(Icons.account_circle)),
-          ],
-            currentIndex: curInd,
-            onTap:(int Index){
-              setState(() {
-                curInd = Index;
-              });
-            },
-          ),
-        )
-    );
+            ])),
+            body: Container(
+                child: _curInd == 0
+                    ? const DashboardPage()
+                    : _curInd == 1
+                        ? AssignmentScreen()
+                        : Profile()),
+            bottomNavigationBar: CustomBottomNavBar(
+              currentIndex: _curInd,
+              onIndexChanged: (index) {
+                setState(() {
+                  _curInd = index;
+                });
+              },
+            )));
   }
 }
