@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-
 class QuizApp extends StatefulWidget {
+  const QuizApp({Key? key}) : super(key: key);
+
   @override
-  _QuizAppState createState() => _QuizAppState();
+  QuizAppState createState() => QuizAppState();
 }
 
-class _QuizAppState extends State<QuizApp> {
+class QuizAppState extends State<QuizApp> {
   int currentQuestionIndex = 0;
   List<String> questions = [
     'What is Flutter ?',
@@ -14,12 +15,19 @@ class _QuizAppState extends State<QuizApp> {
     'What is the widget tree in Flutter?'
   ];
   List<List<String>> answers = [
-    ['A programming language', 'A mobile app development framework', 'A video game engine', ' A machine learning library'],
+    [
+      'A programming language',
+      'A mobile app development framework',
+      'A video game engine',
+      ' A machine learning library'
+    ],
     ['Java', 'Swift', 'Dart', 'Python'],
-    ['A data structure that represents the layout and structure of a Flutter app',
+    [
+      'A data structure that represents the layout and structure of a Flutter app',
       ' A tool for debugging Flutter apps',
       'A way to organize assets and resources in a Flutter app',
-      ' A programming pattern for building Flutter apps']
+      ' A programming pattern for building Flutter apps'
+    ]
   ];
   List<int> correctAnswers = [0, 0, 0];
   int score = 0;

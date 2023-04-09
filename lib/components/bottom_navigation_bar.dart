@@ -16,8 +16,6 @@ class CustomBottomNavBar extends StatefulWidget {
 }
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
-  int _currentIndex = 0;
-
   final List<NavigationItem> _navigationItems = [
     const NavigationItem(
       icon: Icons.home_outlined,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -18,11 +17,13 @@ class Assignment {
 }
 
 class AssignmentScreen extends StatefulWidget {
+  const AssignmentScreen({Key? key}) : super(key: key);
+
   @override
-  _AssignmentScreenState createState() => _AssignmentScreenState();
+  AssignmentScreenState createState() => AssignmentScreenState();
 }
 
-class _AssignmentScreenState extends State<AssignmentScreen> {
+class AssignmentScreenState extends State<AssignmentScreen> {
   final List<Assignment> _assignments = [
     Assignment(
       subject: 'Mathematics',

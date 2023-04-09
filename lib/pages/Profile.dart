@@ -1,35 +1,64 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:edubro/components/side_drawer_navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/firebase.dart';
 
 final db = FirebaseFirestore.instance;
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
+
+  @override
+  ProfileScreenState createState() => ProfileScreenState();
+}
+
+class ProfileScreenState extends State<Profile> {
+  @override
+  void dispose() {
+    _saveLastVisitedScreen();
+    super.dispose();
+  }
+
+  Future<void> _saveLastVisitedScreen() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lastScreen', '/profile');
+    print('Last visited screen saved to /profile');
+  }
 
   @override
   Widget build(BuildContext context) {
     final User? user = context.watch<User?>();
+    if (user == null) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
-    // get the user data from db and store in a variable called userData
-    final userData = db.collection('users').doc(user!.uid).get();
-    // print(userData);
+    String name = user.displayName ?? 'Name';
+    String email = user.email ?? 'Email';
+    String imageUrl = user.photoURL ?? 'Photo URL';
+    String uid = user.uid;
 
-    final name = user.displayName ?? 'Name';
-    final email = user.email ?? 'Email';
-    final imageUrl = user.photoURL ?? 'Photo URL';
-    final emailVerified = user.emailVerified;
+    bool emailVerified = user.emailVerified;
     final lastseen = user.metadata.lastSignInTime ?? DateTime.now();
     const xp = 76;
-
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final String formattedDate = formatter.format(lastseen);
 
     return Scaffold(
+      appBar: AppBar(
+        // leading: const Icon(Icons.keyboard_option_key_outlined),
+        title: Text(name),
+      ),
+      drawer: SideNavBarDrawer(
+          email: email, name: name, photoURL: imageUrl, uid: uid),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -99,7 +128,7 @@ class Profile extends StatelessWidget {
               subtitle: Text(formattedDate),
             ),
             const Divider(),
-            // XpWidget(xp: xp),
+            const XpWidget(xp: xp),
           ],
         ),
       ),
@@ -115,7 +144,7 @@ class XpWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
@@ -124,7 +153,7 @@ class XpWidget extends StatelessWidget {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 1,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),

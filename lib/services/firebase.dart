@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import '../components/showOtpDialog.dart';
-import '../components/showSnackbar.dart';
-import 'package:flutter/foundation.dart';
+import '../components/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -83,8 +81,6 @@ class FirebaseAuthMethods {
       await _auth.signOut();
       // clear the token
       await GoogleSignIn().signOut();
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!); // Displaying the error message
     }

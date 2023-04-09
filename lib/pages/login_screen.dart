@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:EduBro/pages/home.dart';
+import 'package:edubro/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:EduBro/services/firebase.dart';
+import 'package:edubro/services/firebase.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,15 +17,29 @@ class LoginScreen extends StatefulWidget {
 // }
 
 class _LoginScreenState extends State<LoginScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Schedule the navigation after the widget has been built
-    Future.delayed(Duration.zero, () {
-      final User? user = context.read<User?>();
-      if (user != null) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
+  bool _isSigningIn = false;
+
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isSigningIn = true;
+    });
+    // Add your Google sign-in code here
+    try {
+      FirebaseAuthMethods(FirebaseAuth.instance).signInWithGoogle(context);
+    } catch (e) {
+      print("error ocured in login_Scrren");
+    }
+
+    final User? user = context.read<User?>();
+    if (user != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    }
+    setState(() {
+      _isSigningIn = false;
     });
   }
 
@@ -50,17 +64,17 @@ class _LoginScreenState extends State<LoginScreen> {
         Image.asset("assets/images/edubro_logo.png"),
         ElevatedButton.icon(
           onPressed: () {
-            // add your button's functionality here
-            FirebaseAuthMethods(FirebaseAuth.instance)
-                .signInWithGoogle(context);
-            // signInWithGoogle(context);
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const HomePage(),
-              ),
-            );
+            _signInWithGoogle();
           },
-          label: const Text("Sign With Google"),
+          label: Visibility(
+            visible: !_isSigningIn,
+            replacement: const SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(color: Colors.amber),
+            ),
+            child: const Text("Sign With Google"),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blueAccent,
           ),
