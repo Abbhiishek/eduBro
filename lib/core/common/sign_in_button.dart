@@ -7,15 +7,15 @@ class SignInButton extends ConsumerWidget {
     super.key,
   });
 
-  void signInWithGoogle(WidgetRef ref) {
-    ref.read(authControllerProvider).signInWithGoogle();
+  void signInWithGoogle(BuildContext context, WidgetRef ref) {
+    ref.read(authControllerProvider.notifier).signInWithGoogle(context);
     //
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
-      onPressed: () => signInWithGoogle(ref),
+      onPressed: () => signInWithGoogle(context, ref),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromRGBO(0, 255, 255, 1),
         shape: RoundedRectangleBorder(

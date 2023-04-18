@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
@@ -8,6 +11,16 @@ class UserModel {
   final bool isAuthenticated;
   final int karma;
   final List<String> awards;
+  final String bio;
+  final String username;
+  final int level;
+  final Map<String, dynamic> posts;
+  final Map<String, dynamic> replies;
+  final Map<String, dynamic> subjects;
+  final Map<String, dynamic> communities;
+  final Map<String, dynamic> followers;
+  final Map<String, dynamic> following;
+  final Map<String, dynamic> notifications;
   UserModel({
     required this.name,
     required this.email,
@@ -16,6 +29,16 @@ class UserModel {
     required this.isAuthenticated,
     required this.karma,
     required this.awards,
+    required this.bio,
+    required this.username,
+    required this.level,
+    required this.posts,
+    required this.replies,
+    required this.subjects,
+    required this.communities,
+    required this.followers,
+    required this.following,
+    required this.notifications,
   });
 
   UserModel copyWith({
@@ -26,6 +49,16 @@ class UserModel {
     bool? isAuthenticated,
     int? karma,
     List<String>? awards,
+    String? bio,
+    String? username,
+    int? level,
+    Map<String, dynamic>? posts,
+    Map<String, dynamic>? replies,
+    Map<String, dynamic>? subjects,
+    Map<String, dynamic>? communities,
+    Map<String, dynamic>? followers,
+    Map<String, dynamic>? following,
+    Map<String, dynamic>? notifications,
   }) {
     return UserModel(
       name: name ?? this.name,
@@ -35,6 +68,16 @@ class UserModel {
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       karma: karma ?? this.karma,
       awards: awards ?? this.awards,
+      bio: bio ?? this.bio,
+      username: username ?? this.username,
+      level: level ?? this.level,
+      posts: posts ?? this.posts,
+      replies: replies ?? this.replies,
+      subjects: subjects ?? this.subjects,
+      communities: communities ?? this.communities,
+      followers: followers ?? this.followers,
+      following: following ?? this.following,
+      notifications: notifications ?? this.notifications,
     );
   }
 
@@ -48,6 +91,16 @@ class UserModel {
     result.addAll({'isAuthenticated': isAuthenticated});
     result.addAll({'karma': karma});
     result.addAll({'awards': awards});
+    result.addAll({'bio': bio});
+    result.addAll({'username': username});
+    result.addAll({'level': level});
+    result.addAll({'posts': posts});
+    result.addAll({'replies': replies});
+    result.addAll({'subjects': subjects});
+    result.addAll({'communities': communities});
+    result.addAll({'followers': followers});
+    result.addAll({'following': following});
+    result.addAll({'notifications': notifications});
 
     return result;
   }
@@ -61,12 +114,22 @@ class UserModel {
       isAuthenticated: map['isAuthenticated'] ?? false,
       karma: map['karma']?.toInt() ?? 0,
       awards: List<String>.from(map['awards']),
+      bio: map['bio'] ?? '',
+      username: map['username'] ?? '',
+      level: map['level']?.toInt() ?? 0,
+      posts: Map<String, dynamic>.from(map['posts']),
+      replies: Map<String, dynamic>.from(map['replies']),
+      subjects: Map<String, dynamic>.from(map['subjects']),
+      communities: Map<String, dynamic>.from(map['communities']),
+      followers: Map<String, dynamic>.from(map['followers']),
+      following: Map<String, dynamic>.from(map['following']),
+      notifications: Map<String, dynamic>.from(map['notifications']),
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(name: $name, email: $email, profilePic: $profilePic, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards)';
+    return 'UserModel(name: $name, email: $email, profilePic: $profilePic, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, bio: $bio, username: $username, level: $level, posts: $posts, replies: $replies, subjects: $subjects, communities: $communities, followers: $followers, following: $following, notifications: $notifications)';
   }
 
   @override
@@ -80,7 +143,17 @@ class UserModel {
         other.uid == uid &&
         other.isAuthenticated == isAuthenticated &&
         other.karma == karma &&
-        listEquals(other.awards, awards);
+        listEquals(other.awards, awards) &&
+        other.bio == bio &&
+        other.username == username &&
+        other.level == level &&
+        mapEquals(other.posts, posts) &&
+        mapEquals(other.replies, replies) &&
+        mapEquals(other.subjects, subjects) &&
+        mapEquals(other.communities, communities) &&
+        mapEquals(other.followers, followers) &&
+        mapEquals(other.following, following) &&
+        mapEquals(other.notifications, notifications);
   }
 
   @override
@@ -91,6 +164,16 @@ class UserModel {
         uid.hashCode ^
         isAuthenticated.hashCode ^
         karma.hashCode ^
-        awards.hashCode;
+        awards.hashCode ^
+        bio.hashCode ^
+        username.hashCode ^
+        level.hashCode ^
+        posts.hashCode ^
+        replies.hashCode ^
+        subjects.hashCode ^
+        communities.hashCode ^
+        followers.hashCode ^
+        following.hashCode ^
+        notifications.hashCode;
   }
 }
