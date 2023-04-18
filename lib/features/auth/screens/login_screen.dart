@@ -13,13 +13,13 @@ class LoginScrren extends ConsumerWidget {
     final isLoading = ref.watch(authControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(),
+      // appBar: AppBar(),
       body: isLoading
           ? const Loader()
           : Center(
               child: Column(
               children: [
-                const SizedBox(height: 30),
+                const SizedBox(height: 130),
                 Image.asset(
                   Constants.loginScreenImage,
                 ),
@@ -32,15 +32,15 @@ class LoginScrren extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Padding(
-                  padding: EdgeInsets.only(left: 30.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30.0, top: 10),
                   child: Text(
                     'Get Started With Your College Real Bro 🫂',
                     style: TextStyle(
                       fontSize: 50,
                       overflow: TextOverflow.clip,
                       fontWeight: FontWeight.w600,
-                      color: Colors.blue,
+                      color: Colors.blue.shade700,
                     ),
                   ),
                 ),
