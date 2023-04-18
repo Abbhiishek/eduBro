@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sensei/core/constants/constants.dart';
 import 'package:sensei/core/constants/firebase_constants.dart';
 import 'package:sensei/core/failure.dart';
 import 'package:sensei/core/providers/firebase_provider.dart';
@@ -53,6 +54,7 @@ class AuthRepository {
           name: userCredential.user!.displayName ?? '',
           email: userCredential.user!.email ?? '',
           profilePic: userCredential.user!.photoURL ?? '',
+          banner: Constants.bannerDefault,
           uid: userCredential.user!.uid,
           isAuthenticated: true,
           karma: 0,
@@ -84,5 +86,10 @@ class AuthRepository {
     return _users.doc(uid).snapshots().map((event) {
       return UserModel.fromMap(event.data() as Map<String, dynamic>);
     });
+  }
+
+  void logOut() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
   }
 }
