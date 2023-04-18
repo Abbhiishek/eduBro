@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sensei/core/common/sign_in_button.dart';
 import 'package:sensei/core/constants/constants.dart';
 
 class LoginScrren extends StatelessWidget {
@@ -7,20 +8,7 @@ class LoginScrren extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login',
-            style: TextStyle(
-                // color: Colors.black,
-                )),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Sign Up',
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(),
       body: Center(
           child: Column(
         children: [
@@ -30,9 +18,9 @@ class LoginScrren extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           const Text(
-            'Welcome to Sensei',
+            'Welcome to Sensei !',
             style: TextStyle(
-              fontSize: 45,
+              fontSize: 42,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -50,51 +38,7 @@ class LoginScrren extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(0, 255, 255, 1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                child: const Text(
-                  '🚀 Sign In with Google',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Dialog(
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      child: const Text('Hello'),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(0, 255, 255, 1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                child: const Text(
-                  '😎 Sign Up with Google',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          const SignInButton(),
           const SizedBox(height: 90),
           const Text(
             '@sensei 2023',
