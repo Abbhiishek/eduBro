@@ -1,52 +1,76 @@
-import 'package:EduBro/services/firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'components/splash.dart';
-import './pages/home.dart';
-import 'pages/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'pages/quizes.dart';
-import 'package:url_strategy/url_strategy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:routemaster/routemaster.dart';
+import 'package:sensei/core/common/error_text.dart';
+import 'package:sensei/core/common/loader.dart';
+import 'package:sensei/features/auth/controller/auth_controller.dart';
+import 'package:sensei/models/user_model.dart';
+import 'package:sensei/router.dart';
+import 'package:sensei/theme/pallete.dart';
+import 'package:sensei/firebase_options.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // setPathUrlStrategy();
-  runApp(const Land());
+  runApp(const ProviderScope(
+    child: MyApp(),
+  ));
 }
 
-class Land extends StatefulWidget {
-  const Land({super.key});
+class MyApp extends ConsumerStatefulWidget {
+  const MyApp({super.key});
+
   @override
-  State<Land> createState() => _LandState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
 }
 
-class _LandState extends State<Land> {
+class _MyAppState extends ConsumerState<MyApp> {
+  UserModel? userModel;
+
+  void getData(WidgetRef ref, User data) async {
+    userModel = await ref
+        .watch(authControllerProvider.notifier)
+        .getUser(data.uid)
+        .first;
+
+    ref.read(userProvider.notifier).update((state) => userModel);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          Provider<FirebaseAuthMethods>(
-            create: (_) => FirebaseAuthMethods(FirebaseAuth.instance),
+    return ref.watch(authStateChangeProvider).when(
+          data: (data) => MaterialApp.router(
+            title: 'Sensei',
+            debugShowCheckedModeBanner: false,
+            theme: Pallete.darkModeAppTheme,
+            routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
+              if (data != null) {
+                getData(ref, data);
+                if (userModel != null) {
+                  return loggedInRoute;
+                }
+              }
+              return loggedOutRoute;
+            }),
+            routeInformationParser: const RoutemasterParser(),
           ),
-          StreamProvider(
-            create: (context) => context.read<FirebaseAuthMethods>().authState,
-            initialData: null,
-          )
-        ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'EduBro',
-          initialRoute: '/',
-          routes: {
-            '/': (context) => const SplashScreen(),
-            '/login': (context) => const LoginScreen(),
-            '/home': (context) => const HomePage(),
-          },
-        ));
+          error: (error, stackTrace) => ErrorText(error: error.toString()),
+          loading: () => const Loader(),
+        );
+
+    // return MaterialApp.router(
+    //   title: 'Sensei',
+    //   debugShowCheckedModeBanner: false,
+    //   theme: Pallete.darkModeAppTheme,
+    //   routerDelegate:
+    //       RoutemasterDelegate(routesBuilder: (context) => loggedOutRoute),
+    //   routeInformationParser: const RoutemasterParser(),
+    // );
   }
 }
