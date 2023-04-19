@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,13 +17,19 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const ProviderScope(
-    child: MyApp(),
-  ));
+  FirebaseMessaging.instance.requestPermission();
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    // Show a popup with the message details
+    print(message);
+  });
+  runApp(const ProviderScope(child: MyApp()));
+  // debugDumpApp();
 }
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
+
+  static BuildContext? context;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
@@ -44,6 +51,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.context = context; // Set the context variable in the build method
     return ref.watch(authStateChangeProvider).when(
           data: (data) => MaterialApp.router(
             title: 'Sensei',
@@ -63,14 +71,5 @@ class _MyAppState extends ConsumerState<MyApp> {
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: () => const Loader(),
         );
-
-    // return MaterialApp.router(
-    //   title: 'Sensei',
-    //   debugShowCheckedModeBanner: false,
-    //   theme: Pallete.darkModeAppTheme,
-    //   routerDelegate:
-    //       RoutemasterDelegate(routesBuilder: (context) => loggedOutRoute),
-    //   routeInformationParser: const RoutemasterParser(),
-    // );
   }
 }

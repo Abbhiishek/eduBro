@@ -57,9 +57,16 @@ class CommunityController extends StateNotifier<bool> {
         _storageRepository = storageRepository,
         super(false);
 
-  void createCommunity(String name, BuildContext context) async {
+  void createCommunity(
+      String name,
+      String bio,
+      File? communityProfileFile,
+      Uint8List? communityProfileWebFile,
+      List<String> tags,
+      BuildContext context) async {
     state = true;
     final uid = _ref.read(userProvider)?.uid ?? '';
+
     Community community = Community(
       id: name,
       name: name,
@@ -67,7 +74,25 @@ class CommunityController extends StateNotifier<bool> {
       avatar: Constants.avatarDefault,
       members: [uid],
       mods: [uid],
+      bio: bio,
+      tags: tags,
+      ownerId: uid,
+      ownerName: _ref.read(userProvider)?.name ?? '',
     );
+
+    if (communityProfileFile != null || communityProfileWebFile != null) {
+      // communities/profile/memes
+      final res = await _storageRepository.storeFile(
+        path: 'communities/profile',
+        id: community.name,
+        file: communityProfileFile,
+        webFile: communityProfileWebFile,
+      );
+      res.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) => community = community.copyWith(avatar: r),
+      );
+    }
 
     final res = await _communityRepository.createCommunity(community);
     state = false;

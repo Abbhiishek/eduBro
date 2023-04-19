@@ -61,60 +61,59 @@ class SideDrawer extends ConsumerWidget {
               onTap: () => navigateToHome(context),
             ),
             ListTile(
-              title: const Text('Explore (Coming Soon)'),
+              title: const Text('Explore Community'),
               leading: const Icon(
                 Icons.explore,
               ),
-              onTap: () => navigateToUserProfile(context, user.uid),
+              onTap: () => navigateToCommunity(context),
             ),
             ListTile(
-              title: const Text('Create (Coming Soon)'),
+              title: const Text('Create Post (Coming Soon)'),
               leading: const Icon(
                 Icons.add,
               ),
-              onTap: () => navigateToUserProfile(context, user.uid),
+              onTap: () => navigateToAddPost(context),
             ),
-            ListTile(
-              title: const Text('Messages (Coming Soon)'),
-              leading: const Icon(
-                Icons.message,
-              ),
-              onTap: () => navigateToUserProfile(context, user.uid),
-            ),
+            // ListTile(
+            //   title: const Text('Messages (Coming Soon)'),
+            //   leading: const Icon(
+            //     Icons.message,
+            //   ),
+            //   onTap: () => 'null',
+            // ),
             ListTile(
               title: const Text('Notifications (Coming Soon)'),
               leading: const Icon(
                 Icons.notifications,
               ),
-              onTap: () => navigateToUserProfile(context, user.uid),
+              onTap: () => 'null',
             ),
-            ListTile(
-              title: const Text('Attendance (Beta)'),
-              leading: const Icon(
-                Icons.calendar_today,
-              ),
-              onTap: () => navigateToUserProfile(context, user.uid),
-            ),
-            ListTile(
-              title: const Text('Assignmnets (Coming Soon)'),
-              leading: const Icon(
-                Icons.work,
-              ),
-              onTap: () => navigateToUserProfile(context, user.uid),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              leading: const Icon(
-                Icons.settings,
-              ),
-              onTap: () => navigateToUserProfile(context, user.uid),
-            ),
+            // ListTile(
+            //     title: const Text('Attendance (Beta)'),
+            //     leading: const Icon(
+            //       Icons.calendar_today,
+            //     ),
+            //     onTap: () => 'null'),
+            // ListTile(
+            //   title: const Text('Assignmnets (Coming Soon)'),
+            //   leading: const Icon(
+            //     Icons.work,
+            //   ),
+            //   onTap: () => 'null',
+            // ),
+            // ListTile(
+            //   title: const Text('Settings'),
+            //   leading: const Icon(
+            //     Icons.settings,
+            //   ),
+            //   onTap: () => navigateToUserProfile(context, user.uid),
+            // ),
             ListTile(
               title: const Text('Help'),
               leading: const Icon(
                 Icons.help,
               ),
-              onTap: () => navigateToUserProfile(context, user.uid),
+              onTap: () => 'null',
             ),
           ],
         ),
@@ -128,5 +127,13 @@ class SideDrawer extends ConsumerWidget {
 
   navigateToUserProfile(BuildContext context, String uid) {
     Routemaster.of(context).push('/u/$uid');
+  }
+
+  navigateToCommunity(BuildContext context) {
+    Routemaster.of(context).push('/community');
+  }
+
+  navigateToAddPost(BuildContext context) {
+    Routemaster.of(context).push('/add-post');
   }
 }

@@ -199,6 +199,15 @@ class PostController extends StateNotifier<bool> {
         (r) => showSnackBar(context, 'Post Deleted successfully!'));
   }
 
+  void deleteComment(Comment comment, BuildContext context) async {
+    final res = await _postRepository.deleteComment(comment);
+    _ref
+        .read(userProfileControllerProvider.notifier)
+        .updateUserKarma(UserKarma.deleteComment);
+    res.fold((l) => null,
+        (r) => showSnackBar(context, 'Comment Deleted successfully!'));
+  }
+
   void upvote(Post post) async {
     final uid = _ref.read(userProvider)!.uid;
     _postRepository.upvote(post, uid);
@@ -227,6 +236,8 @@ class PostController extends StateNotifier<bool> {
       postId: post.id,
       username: user.name,
       profilePic: user.profilePic,
+      downVotes: 0,
+      upVotes: 0,
     );
     final res = await _postRepository.addComment(comment);
     _ref

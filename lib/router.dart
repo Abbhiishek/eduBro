@@ -4,6 +4,7 @@ import 'package:sensei/features/community/screens/add_mods_screen.dart';
 import 'package:sensei/features/community/screens/community_screen.dart';
 import 'package:sensei/features/community/screens/create_community_screen.dart';
 import 'package:sensei/features/community/screens/edit_community_screen.dart';
+import 'package:sensei/features/community/screens/list_community_screen.dart';
 import 'package:sensei/features/community/screens/mod_tools_screen.dart';
 import 'package:sensei/features/home/screens/home_screen.dart';
 import 'package:sensei/features/post/screens/add_post_screen.dart';
@@ -64,6 +65,9 @@ final loggedInRoute = RouteMap(
         ),
     '/add-post': (routeData) => const MaterialPage(
           child: AddPostScreen(),
+        ),
+    '/community': (route) => const MaterialPage(
+          child: CommunityListDrawer(),
         ),
   },
 );

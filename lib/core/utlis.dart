@@ -12,7 +12,19 @@ void showSnackBar(BuildContext context, String text) {
 }
 
 Future<FilePickerResult?> pickImage() async {
-  final image = await FilePicker.platform.pickFiles(type: FileType.image);
+  final image = await FilePicker.platform.pickFiles(
+    type: FileType.image,
+    allowCompression: true,
+    dialogTitle: "Select Image",
+    withData: true,
+    lockParentWindow: true,
+    onFileLoading: (p0) {
+      const ActionChip(
+        label: Text('Loading...'),
+        backgroundColor: Colors.grey,
+      );
+    },
+  );
 
   return image;
 }

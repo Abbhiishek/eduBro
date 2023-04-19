@@ -51,6 +51,7 @@ class AuthRepository {
       if (userCredential.additionalUserInfo!.isNewUser) {
         // print('New User detected');
         userModel = UserModel(
+          id: userCredential.user!.displayName ?? '',
           name: userCredential.user!.displayName ?? '',
           email: userCredential.user!.email ?? '',
           profilePic: userCredential.user!.photoURL ?? '',
@@ -58,9 +59,18 @@ class AuthRepository {
           uid: userCredential.user!.uid,
           isAuthenticated: true,
           karma: 0,
-          awards: [],
-          bio: '',
-          username: '',
+          awards: [
+            'til',
+            'awesomeAns',
+            'gold',
+            'platinum',
+            'helpful',
+            'plusone',
+            'rocket',
+            'thankyou'
+          ],
+          bio: 'We love to code 😎',
+          username: '${userCredential.user!.displayName ?? ''}+',
           level: 0,
           posts: {},
           replies: {},

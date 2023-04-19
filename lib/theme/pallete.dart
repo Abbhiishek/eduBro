@@ -14,6 +14,7 @@ class Pallete {
   static const drawerColor = Color.fromRGBO(18, 18, 18, 1);
   static const navyColor = Color.fromRGBO(10, 77, 104, 1);
   static const mintColor = Color.fromRGBO(0, 255, 202, 1);
+  static const tealColor = Color.fromRGBO(8, 131, 149, 1);
   static const whiteColor = Colors.white;
   static var redColor = Colors.red.shade500;
   static var blueColor = Colors.blue.shade300;
@@ -30,15 +31,15 @@ class Pallete {
     ),
     drawerTheme: const DrawerThemeData(
       backgroundColor: drawerColor,
+      shadowColor: tealColor,
     ),
     iconTheme: const IconThemeData(
-      color: mintColor,
+      color: navyColor,
     ),
-    primaryColor: redColor,
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
       background: drawerColor,
-      primary: redColor,
+      primary: tealColor,
       secondary: blueColor,
       surface: drawerColor,
       onBackground: whiteColor,
@@ -52,29 +53,28 @@ class Pallete {
 
   static var lightModeAppTheme = ThemeData.light().copyWith(
     scaffoldBackgroundColor: whiteColor,
-    cardColor: greyColor,
+    cardColor: const Color.fromARGB(255, 173, 173, 173),
     appBarTheme: const AppBarTheme(
       backgroundColor: whiteColor,
       elevation: 0,
       iconTheme: IconThemeData(
-        color: blackColor,
+        color: navyColor,
       ),
     ),
     drawerTheme: const DrawerThemeData(
       backgroundColor: whiteColor,
     ),
     iconTheme: const IconThemeData(
-      color: mintColor,
+      color: navyColor,
     ),
-    primaryColor: redColor,
     colorScheme: ColorScheme(
       brightness: Brightness.light,
       background: whiteColor,
-      primary: redColor,
+      primary: tealColor,
       secondary: blueColor,
       surface: whiteColor,
       onBackground: blackColor,
-      onPrimary: whiteColor,
+      onPrimary: drawerColor,
       onSecondary: blackColor,
       onSurface: blackColor,
       error: redColor,

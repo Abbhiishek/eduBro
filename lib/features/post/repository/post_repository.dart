@@ -72,7 +72,26 @@ class PostRepository {
 
   FutureVoid deletePost(Post post) async {
     try {
+      _comments
+          .where('postId', isEqualTo: post.id)
+          .get()
+          .then((value) => value.docs.forEach((element) {
+                element.reference.delete();
+              }));
       return right(_posts.doc(post.id).delete());
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid deleteComment(Comment comment) async {
+    try {
+      _posts.doc(comment.postId).update({
+        'commentCount': FieldValue.increment(-1),
+      });
+      return right(_comments.doc(comment.id).delete());
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {

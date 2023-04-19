@@ -94,8 +94,8 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     final isTypeImage = widget.type == 'image';
     final isTypeText = widget.type == 'text';
     final isTypeLink = widget.type == 'link';
-    final currentTheme = ref.watch(themeNotifierProvider);
     final isLoading = ref.watch(postControllerProvider);
+    final currentTheme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -114,15 +114,74 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    TextField(
-                      controller: titleController,
-                      decoration: const InputDecoration(
-                        filled: true,
-                        hintText: 'Enter Title here',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(18),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ref.watch(userCommunitiesProvider).when(
+                              data: (data) {
+                                communities = data;
+
+                                if (data.isEmpty) {
+                                  return const SizedBox();
+                                }
+
+                                return DropdownButton(
+                                  underline: Container(),
+                                  borderRadius: BorderRadius.circular(23),
+                                  value: selectedCommunity ?? data[0],
+                                  items: data
+                                      .map(
+                                        (e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: [
+                                                const SizedBox(height: 30),
+                                                CircleAvatar(
+                                                  radius: 25,
+                                                  backgroundImage:
+                                                      NetworkImage(e.avatar),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text(e.name),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      selectedCommunity = val;
+                                    });
+                                  },
+                                );
+                              },
+                              error: (error, stackTrace) => ErrorText(
+                                error: error.toString(),
+                              ),
+                              loading: () => const Loader(),
+                            ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(
+                          filled: true,
+                          hintText: 'Enter Title here',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(18),
+                        ),
+                        maxLength: 30,
                       ),
-                      maxLength: 30,
                     ),
                     const SizedBox(height: 10),
                     if (isTypeImage)
@@ -133,7 +192,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                           radius: const Radius.circular(10),
                           dashPattern: const [10, 4],
                           strokeCap: StrokeCap.round,
-                          color: currentTheme.textTheme.bodyText2!.color!,
+                          color: currentTheme.primaryColor,
                           child: Container(
                             width: double.infinity,
                             height: 150,
@@ -174,43 +233,6 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
                           contentPadding: EdgeInsets.all(18),
                         ),
                       ),
-                    const SizedBox(height: 20),
-                    const Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Select Community',
-                      ),
-                    ),
-                    ref.watch(userCommunitiesProvider).when(
-                          data: (data) {
-                            communities = data;
-
-                            if (data.isEmpty) {
-                              return const SizedBox();
-                            }
-
-                            return DropdownButton(
-                              value: selectedCommunity ?? data[0],
-                              items: data
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      value: e,
-                                      child: Text(e.name),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  selectedCommunity = val;
-                                });
-                              },
-                            );
-                          },
-                          error: (error, stackTrace) => ErrorText(
-                            error: error.toString(),
-                          ),
-                          loading: () => const Loader(),
-                        ),
                   ],
                 ),
               ),

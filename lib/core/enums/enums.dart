@@ -9,6 +9,7 @@ enum UserKarma {
   linkPost(3),
   imagePost(3),
   awardPost(5),
+  deleteComment(0),
   deletePost(-1);
 
   final int karma;

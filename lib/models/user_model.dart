@@ -1,9 +1,7 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
+  final String id;
   final String name;
   final String email;
   final String profilePic;
@@ -23,6 +21,7 @@ class UserModel {
   final Map<String, dynamic> following;
   final Map<String, dynamic> notifications;
   UserModel({
+    required this.id,
     required this.name,
     required this.email,
     required this.profilePic,
@@ -44,6 +43,7 @@ class UserModel {
   });
 
   UserModel copyWith({
+    String? id,
     String? name,
     String? email,
     String? profilePic,
@@ -64,6 +64,7 @@ class UserModel {
     Map<String, dynamic>? notifications,
   }) {
     return UserModel(
+      id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       profilePic: profilePic ?? this.profilePic,
@@ -88,6 +89,7 @@ class UserModel {
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
+    result.addAll({'id': id});
     result.addAll({'name': name});
     result.addAll({'email': email});
     result.addAll({'profilePic': profilePic});
@@ -112,6 +114,7 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
+      id: map['id'] ?? '',
       name: map['name'] ?? '',
       email: map['email'] ?? '',
       profilePic: map['profilePic'] ?? '',
@@ -135,7 +138,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(name: $name, email: $email, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, bio: $bio, username: $username, level: $level, posts: $posts, replies: $replies, subjects: $subjects, communities: $communities, followers: $followers, following: $following, notifications: $notifications)';
+    return 'UserModel(id: $id, name: $name, email: $email, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, bio: $bio, username: $username, level: $level, posts: $posts, replies: $replies, subjects: $subjects, communities: $communities, followers: $followers, following: $following, notifications: $notifications)';
   }
 
   @override
@@ -143,6 +146,7 @@ class UserModel {
     if (identical(this, other)) return true;
 
     return other is UserModel &&
+        other.id == id &&
         other.name == name &&
         other.email == email &&
         other.profilePic == profilePic &&
@@ -165,7 +169,8 @@ class UserModel {
 
   @override
   int get hashCode {
-    return name.hashCode ^
+    return id.hashCode ^
+        name.hashCode ^
         email.hashCode ^
         profilePic.hashCode ^
         banner.hashCode ^
