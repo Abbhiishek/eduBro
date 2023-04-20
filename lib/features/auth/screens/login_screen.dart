@@ -27,7 +27,7 @@ class LoginScrren extends ConsumerWidget {
                 const Text(
                   'Welcome to Sensei !',
                   style: TextStyle(
-                    fontSize: 42,
+                    fontSize: 35,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -37,16 +37,16 @@ class LoginScrren extends ConsumerWidget {
                   child: Text(
                     'Get Started With Your College Real Bro 🫂',
                     style: TextStyle(
-                      fontSize: 50,
+                      fontSize: 40,
                       overflow: TextOverflow.clip,
                       fontWeight: FontWeight.w600,
                       color: Colors.blue.shade700,
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
                 const SignInButton(),
-                const SizedBox(height: 90),
+                const SizedBox(height: 60),
                 const Text(
                   '@sensei 2023',
                   style: TextStyle(

@@ -1,12 +1,11 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class UserModel {
+  final String id;
   final String name;
   final String email;
   final String profilePic;
+  final String banner;
   final String uid;
   final bool isAuthenticated;
   final int karma;
@@ -22,9 +21,11 @@ class UserModel {
   final Map<String, dynamic> following;
   final Map<String, dynamic> notifications;
   UserModel({
+    required this.id,
     required this.name,
     required this.email,
     required this.profilePic,
+    required this.banner,
     required this.uid,
     required this.isAuthenticated,
     required this.karma,
@@ -42,9 +43,11 @@ class UserModel {
   });
 
   UserModel copyWith({
+    String? id,
     String? name,
     String? email,
     String? profilePic,
+    String? banner,
     String? uid,
     bool? isAuthenticated,
     int? karma,
@@ -61,9 +64,11 @@ class UserModel {
     Map<String, dynamic>? notifications,
   }) {
     return UserModel(
+      id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       profilePic: profilePic ?? this.profilePic,
+      banner: banner ?? this.banner,
       uid: uid ?? this.uid,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       karma: karma ?? this.karma,
@@ -84,9 +89,11 @@ class UserModel {
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
+    result.addAll({'id': id});
     result.addAll({'name': name});
     result.addAll({'email': email});
     result.addAll({'profilePic': profilePic});
+    result.addAll({'banner': banner});
     result.addAll({'uid': uid});
     result.addAll({'isAuthenticated': isAuthenticated});
     result.addAll({'karma': karma});
@@ -107,9 +114,11 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
+      id: map['id'] ?? '',
       name: map['name'] ?? '',
       email: map['email'] ?? '',
       profilePic: map['profilePic'] ?? '',
+      banner: map['banner'] ?? '',
       uid: map['uid'] ?? '',
       isAuthenticated: map['isAuthenticated'] ?? false,
       karma: map['karma']?.toInt() ?? 0,
@@ -129,7 +138,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(name: $name, email: $email, profilePic: $profilePic, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, bio: $bio, username: $username, level: $level, posts: $posts, replies: $replies, subjects: $subjects, communities: $communities, followers: $followers, following: $following, notifications: $notifications)';
+    return 'UserModel(id: $id, name: $name, email: $email, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, bio: $bio, username: $username, level: $level, posts: $posts, replies: $replies, subjects: $subjects, communities: $communities, followers: $followers, following: $following, notifications: $notifications)';
   }
 
   @override
@@ -137,9 +146,11 @@ class UserModel {
     if (identical(this, other)) return true;
 
     return other is UserModel &&
+        other.id == id &&
         other.name == name &&
         other.email == email &&
         other.profilePic == profilePic &&
+        other.banner == banner &&
         other.uid == uid &&
         other.isAuthenticated == isAuthenticated &&
         other.karma == karma &&
@@ -158,9 +169,11 @@ class UserModel {
 
   @override
   int get hashCode {
-    return name.hashCode ^
+    return id.hashCode ^
+        name.hashCode ^
         email.hashCode ^
         profilePic.hashCode ^
+        banner.hashCode ^
         uid.hashCode ^
         isAuthenticated.hashCode ^
         karma.hashCode ^
