@@ -17,11 +17,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.instance.requestPermission();
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    // Show a popup with the message details
-    print(message);
-  });
+  // FirebaseMessaging.instance.requestPermission();
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   // Show a popup with the message details
+  //   print(message);
+  // });
   runApp(const ProviderScope(child: MyApp()));
   // debugDumpApp();
 }
