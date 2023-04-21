@@ -32,9 +32,11 @@ class Pallete {
     drawerTheme: const DrawerThemeData(
       backgroundColor: drawerColor,
       shadowColor: tealColor,
+      elevation: 0,
+      scrimColor: Colors.transparent,
     ),
     iconTheme: const IconThemeData(
-      color: navyColor,
+      color: mintColor,
     ),
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
