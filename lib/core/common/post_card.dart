@@ -1,8 +1,8 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -32,10 +32,42 @@ class PostCard extends ConsumerWidget {
 
   void upvotePost(WidgetRef ref) async {
     ref.read(postControllerProvider.notifier).upvote(post);
+    if (post.uid == ref.watch(userProvider)!.uid) {
+      return;
+    } else {
+      // ref
+      //     .read(notificationControllerProvider.notifier)
+      //     .sendupVotePostNotification(
+      //       senderId: ref.watch(userProvider)!.uid,
+      //       post: post,
+      //     );
+      Fluttertoast.showToast(
+        msg: "Successfully Liked Post",
+        toastLength: Toast.values[1],
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 4,
+        backgroundColor: Pallete.mintColor,
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
+    }
   }
 
   void downvotePost(WidgetRef ref) async {
     ref.read(postControllerProvider.notifier).downvote(post);
+    if (post.uid == ref.watch(userProvider)!.uid) {
+      return;
+    } else {
+      Fluttertoast.showToast(
+        msg: "Successfully Disliked Post",
+        toastLength: Toast.values[1],
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 4,
+        backgroundColor: Pallete.mintColor,
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
+    }
   }
 
   void awardPost(WidgetRef ref, String award, BuildContext context) async {
