@@ -44,14 +44,21 @@ class FeedScreen extends ConsumerWidget {
     }
 
     return ref.watch(userCommunitiesProvider).when(
-          data: (communities) => ref.watch(guestPostsProvider).when(
+          data: (communities) => ref.watch(explorePostsProvider).when(
                 data: (data) {
-                  return ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final post = data[index];
-                      return PostCard(post: post);
-                    },
+                  return Expanded(
+                    child: Column(
+                      children: [
+                        const Text('Explore'),
+                        ListView.builder(
+                          itemCount: data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final post = data[index];
+                            return PostCard(post: post);
+                          },
+                        ),
+                      ],
+                    ),
                   );
                 },
                 error: (error, stackTrace) {
