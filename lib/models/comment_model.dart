@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class Comment {
   final String id;
   final String text;
@@ -7,8 +9,8 @@ class Comment {
   final String postId;
   final String username;
   final String profilePic;
-  final int upVotes;
-  final int downVotes;
+  final List<String> upVotes;
+  final List<String> downVotes;
   Comment({
     required this.id,
     required this.text,
@@ -27,8 +29,8 @@ class Comment {
     String? postId,
     String? username,
     String? profilePic,
-    int? upVotes,
-    int? downVotes,
+    List<String>? upVotes,
+    List<String>? downVotes,
   }) {
     return Comment(
       id: id ?? this.id,
@@ -65,10 +67,15 @@ class Comment {
       postId: map['postId'] ?? '',
       username: map['username'] ?? '',
       profilePic: map['profilePic'] ?? '',
-      upVotes: map['upVotes']?.toInt() ?? 0,
-      downVotes: map['downVotes']?.toInt() ?? 0,
+      upVotes: List<String>.from(map['upVotes']),
+      downVotes: List<String>.from(map['downVotes']),
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory Comment.fromJson(String source) =>
+      Comment.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -86,8 +93,8 @@ class Comment {
         other.postId == postId &&
         other.username == username &&
         other.profilePic == profilePic &&
-        other.upVotes == upVotes &&
-        other.downVotes == downVotes;
+        listEquals(other.upVotes, upVotes) &&
+        listEquals(other.downVotes, downVotes);
   }
 
   @override
