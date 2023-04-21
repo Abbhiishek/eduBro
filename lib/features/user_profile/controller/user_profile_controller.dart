@@ -40,13 +40,15 @@ class UserProfileController extends StateNotifier<bool> {
         _storageRepository = storageRepository,
         super(false);
 
-  void editCommunity({
+  void editProfile({
     required File? profileFile,
     required File? bannerFile,
     required Uint8List? profileWebFile,
     required Uint8List? bannerWebFile,
     required BuildContext context,
     required String name,
+    required String bio,
+    required String username,
   }) async {
     state = true;
     UserModel user = _ref.read(userProvider)!;
@@ -77,8 +79,9 @@ class UserProfileController extends StateNotifier<bool> {
       );
     }
 
-    user = user.copyWith(name: name);
+    user = user.copyWith(name: name, bio: bio, username: username);
     final res = await _userProfileRepository.editProfile(user);
+
     state = false;
     res.fold(
       (l) => showSnackBar(context, l.message),
@@ -91,6 +94,15 @@ class UserProfileController extends StateNotifier<bool> {
 
   Stream<List<Post>> getUserPosts(String uid) {
     return _userProfileRepository.getUserPosts(uid);
+  }
+
+  void followUser(String uid) async {
+    UserModel user = _ref.read(userProvider)!;
+    final res = await _userProfileRepository.followUser(user, uid);
+    res.fold(
+      (l) => null,
+      (r) => _ref.read(userProvider.notifier).update((state) => user),
+    );
   }
 
   void updateUserKarma(UserKarma karma) async {
