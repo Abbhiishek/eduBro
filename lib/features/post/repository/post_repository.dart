@@ -87,10 +87,17 @@ class PostRepository {
       _comments
           .where('postId', isEqualTo: post.id)
           .get()
-          // ignore: avoid_function_literals_in_foreach_calls
-          .then((value) => value.docs.forEach((element) {
+          // ignore: avoid_types_on_closure_parameters (required by fpdart)
+          .then(
+            (value) => value.docs.forEach(
+              (element) {
                 element.reference.delete();
-              }));
+              },
+            ),
+          );
+      _users.doc(post.uid).update({
+        'posts': FieldValue.arrayRemove([post.id]),
+      });
       return right(_posts.doc(post.id).delete());
     } on FirebaseException catch (e) {
       throw e.message!;
@@ -194,7 +201,6 @@ class PostRepository {
   FutureVoid addComment(Comment comment) async {
     try {
       await _comments.doc(comment.id).set(comment.toMap());
-
       return right(_posts.doc(comment.postId).update({
         'commentCount': FieldValue.increment(1),
       }));
