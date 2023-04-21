@@ -95,6 +95,14 @@ class CommunityController extends StateNotifier<bool> {
     }
 
     final res = await _communityRepository.createCommunity(community);
+    // add the commmunity id to the user
+
+    final user = _ref.read(userProvider)!;
+    await _communityRepository.addCommunityToUser(
+      community.id,
+      user.uid,
+    );
+
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Community created successfully!');
@@ -137,6 +145,8 @@ class CommunityController extends StateNotifier<bool> {
     required Uint8List? bannerWebFile,
     required BuildContext context,
     required Community community,
+    required String bio,
+    // List<String>? tags,
   }) async {
     state = true;
     if (profileFile != null || profileWebFile != null) {
@@ -149,7 +159,7 @@ class CommunityController extends StateNotifier<bool> {
       );
       res.fold(
         (l) => showSnackBar(context, l.message),
-        (r) => community = community.copyWith(avatar: r),
+        (r) => community = community.copyWith(avatar: r, bio: bio),
       );
     }
 
@@ -163,9 +173,11 @@ class CommunityController extends StateNotifier<bool> {
       );
       res.fold(
         (l) => showSnackBar(context, l.message),
-        (r) => community = community.copyWith(banner: r),
+        (r) => community = community.copyWith(banner: r, bio: bio),
       );
     }
+
+    community = community.copyWith(bio: bio);
 
     final res = await _communityRepository.editCommunity(community);
     state = false;

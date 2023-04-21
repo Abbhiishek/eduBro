@@ -1,12 +1,16 @@
 import 'dart:io';
+import 'dart:async';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:sensei/core/common/loader.dart';
 import 'package:sensei/core/constants/constants.dart';
 import 'package:sensei/core/utlis.dart';
 import 'package:sensei/features/community/controller/community_controller.dart';
 import 'package:sensei/responsive/responsive.dart';
+import 'package:sensei/theme/pallete.dart';
 
 final tagListProvider =
     StateNotifierProvider<TagListNotifier, List<String>>((ref) {
@@ -44,6 +48,40 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
     super.dispose();
     communityNameController.dispose();
     communityBioController.dispose();
+  }
+
+  Future<void> _cropImage() async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: bannerFile!.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Your Community Logo',
+          toolbarColor: Colors.black,
+          toolbarWidgetColor: Pallete.mintColor,
+          activeControlsWidgetColor: Pallete.tealColor,
+          cropFrameColor: Pallete.mintColor,
+          hideBottomControls: false,
+          statusBarColor: Colors.black,
+          initAspectRatio: CropAspectRatioPreset.square,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'Crop Your Community Logo',
+        ),
+        WebUiSettings(
+          context: context,
+        ),
+      ],
+    );
+
+    if (croppedFile != null) {
+      setState(() {
+        bannerFile = File(croppedFile.path);
+      });
+    }
   }
 
   void selectCommunityProfileImage() async {
@@ -101,6 +139,9 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         title: const Text('Create a community'),
       ),
       body: isLoading
@@ -120,29 +161,52 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                         child: Text('Community photo'),
                       ),
                       const SizedBox(height: 30),
+                      DottedBorder(
+                        color: Pallete.mintColor,
+                        strokeWidth: 1,
+                        dashPattern: const [5, 5],
+                        borderType: BorderType.Rect,
+                        radius: const Radius.circular(10),
+                        child: InkWell(
+                          onTap: selectCommunityProfileImage,
+                          child: Container(
+                            height: 250,
+                            width: 250,
+                            decoration: BoxDecoration(
+                              // color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: bannerFile != null
+                                ? Image.file(
+                                    bannerFile!,
+                                    fit: BoxFit.cover,
+                                  )
+                                : bannerWebFile != null
+                                    ? Image.memory(
+                                        bannerWebFile!,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : const Icon(
+                                        Icons.add_a_photo,
+                                        // color: Colors.grey,
+                                      ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
                       InkWell(
-                        onTap: selectCommunityProfileImage,
+                        onTap: _cropImage,
                         child: Container(
-                          height: 250,
-                          width: 250,
+                          height: 50,
+                          width: 50,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: Colors.grey[700],
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: bannerFile != null
-                              ? Image.file(
-                                  bannerFile!,
-                                  fit: BoxFit.cover,
-                                )
-                              : bannerWebFile != null
-                                  ? Image.memory(
-                                      bannerWebFile!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : const Icon(
-                                      Icons.add_a_photo,
-                                      color: Colors.grey,
-                                    ),
+                          child: const Icon(
+                            Icons.crop,
+                            // color: Colors.grey,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 30),
@@ -178,7 +242,6 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                         ),
                         maxLength: 150,
                       ),
-
                       const Align(
                         alignment: Alignment.topLeft,
                         child: Text('Chosen tags for the community'),
@@ -299,14 +362,12 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                           }).toList(),
                         ),
                       ),
-
-                      // i have a list of tags in my constants i want to list them here and when i click on them they should be added to the list of tags
-                      // Create community button
                       const SizedBox(height: 30),
                       ElevatedButton(
                         onPressed: createCommunity,
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 50),
+                            // backgroundColor: Pall,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             )),

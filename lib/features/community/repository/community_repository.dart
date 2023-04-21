@@ -17,6 +17,9 @@ class CommunityRepository {
   CommunityRepository({required FirebaseFirestore firestore})
       : _firestore = firestore;
 
+  final _users =
+      FirebaseFirestore.instance.collection(FirebaseConstants.usersCollection);
+
   FutureVoid createCommunity(Community community) async {
     try {
       var communityDoc = await _communities.doc(community.name).get();
@@ -25,6 +28,21 @@ class CommunityRepository {
       }
 
       return right(_communities.doc(community.name).set(community.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid addCommunityToUser(String communityName, String userId) async {
+    // *** Add community to user
+    try {
+      return right(
+        _users.doc(userId).update({
+          'communities': FieldValue.arrayUnion([communityName]),
+        }),
+      );
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
