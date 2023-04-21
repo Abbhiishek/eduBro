@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -159,15 +160,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
             IconButton(
               onPressed: () {
-                Fluttertoast.showToast(
-                  msg: "Notifications Coming Soon! 😀",
-                  toastLength: Toast.values[1],
-                  gravity: ToastGravity.TOP,
-                  timeInSecForIosWeb: 4,
-                  backgroundColor: Pallete.mintColor,
-                  textColor: Colors.black,
-                  fontSize: 16.0,
-                );
+                // Fluttertoast.showToast(
+                //   msg: "Notifications Coming Soon! 😀",
+                //   toastLength: Toast.values[1],
+                //   gravity: ToastGravity.TOP,
+                //   timeInSecForIosWeb: 4,
+                //   backgroundColor: Pallete.mintColor,
+                //   textColor: Colors.black,
+                //   fontSize: 16.0,
+                // );
+                Routemaster.of(context).push('/notifications');
               },
               icon: const Icon(Icons.notifications_active),
             ),
@@ -201,21 +203,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               color: currentTheme.brightness == Brightness.dark
                   ? Colors.black
                   : Colors.black,
-              size: _selectedIndex == 0 ? 45 : 30,
+              size: _selectedIndex == 0 ? 35 : 30,
             ),
             Icon(
               Icons.explore,
               color: currentTheme.brightness == Brightness.dark
                   ? Colors.black
                   : Colors.black,
-              size: _selectedIndex == 1 ? 45 : 30,
+              size: _selectedIndex == 1 ? 35 : 30,
             ),
             Icon(
               Icons.watch_later,
               color: currentTheme.brightness == Brightness.dark
                   ? Colors.black
                   : Colors.black,
-              size: _selectedIndex == 2 ? 45 : 30,
+              size: _selectedIndex == 2 ? 35 : 30,
             ),
           ],
           height: 60,
