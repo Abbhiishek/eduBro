@@ -148,174 +148,155 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
       ),
       body: isLoading
           ? const Loader()
-          : ispartcommunities.hasValue
-              ? Center(
+          : SingleChildScrollView(
+              child: Responsive(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    Text(
-                      "Join a community First to post",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "You can join a community from the community tab",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
-                ))
-              : SingleChildScrollView(
-                  child: Responsive(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ref.watch(userCommunitiesProvider).when(
-                                    data: (data) {
-                                      communities = data;
+                          ref.watch(userCommunitiesProvider).when(
+                                data: (data) {
+                                  communities = data;
 
-                                      if (data.isEmpty) {
-                                        return const SizedBox();
-                                      }
+                                  if (data.isEmpty) {
+                                    return const SizedBox();
+                                  }
 
-                                      return DropdownButton(
-                                        underline: Container(),
-                                        borderRadius: BorderRadius.circular(23),
-                                        value: selectedCommunity ?? data[0],
-                                        items: data
-                                            .map(
-                                              (e) => DropdownMenuItem(
-                                                value: e,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    children: [
-                                                      const SizedBox(
-                                                          height: 30),
-                                                      CircleAvatar(
-                                                        radius: 25,
-                                                        backgroundImage:
-                                                            NetworkImage(
-                                                                e.avatar),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Text(e.name),
-                                                      ),
-                                                    ],
+                                  return DropdownButton(
+                                    underline: Container(),
+                                    borderRadius: BorderRadius.circular(23),
+                                    value: selectedCommunity ?? data[0],
+                                    items: data
+                                        .map(
+                                          (e) => DropdownMenuItem(
+                                            value: e,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                children: [
+                                                  const SizedBox(height: 30),
+                                                  CircleAvatar(
+                                                    radius: 25,
+                                                    backgroundImage:
+                                                        NetworkImage(e.avatar),
                                                   ),
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
-                                        onChanged: (val) {
-                                          setState(() {
-                                            selectedCommunity = val;
-                                          });
-                                        },
-                                      );
-                                    },
-                                    error: (error, stackTrace) => ErrorText(
-                                      error: error.toString(),
-                                    ),
-                                    loading: () => const Loader(),
-                                  ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextField(
-                              controller: titleController,
-                              decoration: const InputDecoration(
-                                filled: true,
-                                hintText: 'Enter Title here',
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.all(18),
-                              ),
-                              maxLength: 30,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          if (isTypeImage)
-                            GestureDetector(
-                              onTap: selectBannerImage,
-                              child: DottedBorder(
-                                borderType: BorderType.RRect,
-                                radius: const Radius.circular(10),
-                                dashPattern: const [10, 4],
-                                strokeCap: StrokeCap.round,
-                                color: Colors.amberAccent,
-                                child: Container(
-                                  width: double.infinity,
-                                  // height: ,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: bannerWebFile != null
-                                      ? Image.memory(bannerWebFile!)
-                                      : bannerFile != null
-                                          ? Image.file(bannerFile!)
-                                          : const Center(
-                                              child: Icon(
-                                                Icons.camera_alt_outlined,
-                                                size: 40,
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Text(e.name),
+                                                  ),
+                                                ],
                                               ),
                                             ),
+                                          ),
+                                        )
+                                        .toList(),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectedCommunity = val;
+                                      });
+                                    },
+                                  );
+                                },
+                                error: (error, stackTrace) => ErrorText(
+                                  error: error.toString(),
                                 ),
+                                loading: () => const Loader(),
                               ),
-                            ),
-                          if (isTypeImage) const SizedBox(height: 10),
-                          if (bannerFile != null || bannerWebFile != null)
-                            InkWell(
-                              onTap: _cropImage,
-                              child: Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Icon(
-                                  Icons.crop,
-                                  // color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          if (isTypeText)
-                            TextField(
-                              controller: descriptionController,
-                              decoration: const InputDecoration(
-                                filled: true,
-                                hintText: 'Enter Description here',
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.all(18),
-                              ),
-                              maxLines: 5,
-                            ),
-                          if (isTypeLink)
-                            TextField(
-                              controller: linkController,
-                              decoration: const InputDecoration(
-                                filled: true,
-                                hintText: 'Enter link here',
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.all(18),
-                              ),
-                            ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: titleController,
+                          decoration: const InputDecoration(
+                            filled: true,
+                            hintText: 'Enter Title here',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(18),
+                          ),
+                          maxLength: 30,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      if (isTypeImage)
+                        GestureDetector(
+                          onTap: selectBannerImage,
+                          child: DottedBorder(
+                            borderType: BorderType.RRect,
+                            radius: const Radius.circular(10),
+                            dashPattern: const [10, 4],
+                            strokeCap: StrokeCap.round,
+                            color: Colors.amberAccent,
+                            child: Container(
+                              width: double.infinity,
+                              // height: ,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: bannerWebFile != null
+                                  ? Image.memory(bannerWebFile!)
+                                  : bannerFile != null
+                                      ? Image.file(bannerFile!)
+                                      : const Center(
+                                          child: Icon(
+                                            Icons.camera_alt_outlined,
+                                            size: 40,
+                                          ),
+                                        ),
+                            ),
+                          ),
+                        ),
+                      if (isTypeImage) const SizedBox(height: 10),
+                      if (bannerFile != null || bannerWebFile != null)
+                        InkWell(
+                          onTap: _cropImage,
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.crop,
+                              // color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      if (isTypeText)
+                        TextField(
+                          controller: descriptionController,
+                          decoration: const InputDecoration(
+                            filled: true,
+                            hintText: 'Enter Description here',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(18),
+                          ),
+                          maxLines: 5,
+                        ),
+                      if (isTypeLink)
+                        TextField(
+                          controller: linkController,
+                          decoration: const InputDecoration(
+                            filled: true,
+                            hintText: 'Enter link here',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(18),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
+              ),
+            ),
       floatingActionButton: !ispartcommunities.hasValue
           ? null
           : FloatingActionButton(
