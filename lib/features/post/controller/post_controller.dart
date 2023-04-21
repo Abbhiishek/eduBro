@@ -31,9 +31,9 @@ final userPostsProvider =
   return postController.fetchUserPosts(communities);
 });
 
-final guestPostsProvider = StreamProvider((ref) {
+final explorePostsProvider = StreamProvider((ref) {
   final postController = ref.watch(postControllerProvider.notifier);
-  return postController.fetchGuestPosts();
+  return postController.fetchExplorePosts();
 });
 
 final getPostByIdProvider = StreamProvider.family((ref, String postId) {
@@ -86,6 +86,7 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+    await _postRepository.addPostToUser(post, user.uid);
     _ref
         .read(userProfileControllerProvider.notifier)
         .updateUserKarma(UserKarma.textPost);
@@ -123,6 +124,7 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+    await _postRepository.addPostToUser(post, user.uid);
     _ref
         .read(userProfileControllerProvider.notifier)
         .updateUserKarma(UserKarma.linkPost);
@@ -168,6 +170,8 @@ class PostController extends StateNotifier<bool> {
       );
 
       final res = await _postRepository.addPost(post);
+      // add the post id to user posts list
+      await _postRepository.addPostToUser(post, user.uid);
       _ref
           .read(userProfileControllerProvider.notifier)
           .updateUserKarma(UserKarma.imagePost);
@@ -186,8 +190,8 @@ class PostController extends StateNotifier<bool> {
     return Stream.value([]);
   }
 
-  Stream<List<Post>> fetchGuestPosts() {
-    return _postRepository.fetchGuestPosts();
+  Stream<List<Post>> fetchExplorePosts() {
+    return _postRepository.fetchExplorePosts();
   }
 
   void deletePost(Post post, BuildContext context) async {
@@ -218,6 +222,14 @@ class PostController extends StateNotifier<bool> {
     _postRepository.downvote(post, uid);
   }
 
+  void upvoteComment(Comment comment) async {
+    _postRepository.upvoteComment(comment, _ref.read(userProvider)!.uid);
+  }
+
+  void downvoteComment(Comment comment) async {
+    _postRepository.downvoteComment(comment, _ref.read(userProvider)!.uid);
+  }
+
   Stream<Post> getPostById(String postId) {
     return _postRepository.getPostById(postId);
   }
@@ -236,8 +248,8 @@ class PostController extends StateNotifier<bool> {
       postId: post.id,
       username: user.name,
       profilePic: user.profilePic,
-      downVotes: 0,
-      upVotes: 0,
+      downVotes: [],
+      upVotes: [],
     );
     final res = await _postRepository.addComment(comment);
     _ref
