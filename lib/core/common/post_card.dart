@@ -233,28 +233,33 @@ class PostCard extends ConsumerWidget {
                               SizedBox(
                                 width: double.infinity,
                                 child: post.link != null
-                                    ? InstaImageViewer(
-                                        disableSwipeToDismiss: false,
-                                        disposeLevel: DisposeLevel.high,
-                                        child: CachedNetworkImage(
-                                          imageUrl: post.link!,
-                                          fit: BoxFit.scaleDown,
-                                          alignment: Alignment.topLeft,
-                                          filterQuality: FilterQuality.high,
-                                          placeholder: (context, url) =>
-                                              const Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                          cacheManager: CacheManager(
-                                            Config('customCacheKey',
-                                                stalePeriod:
-                                                    const Duration(days: 30),
-                                                maxNrOfCacheObjects: 1000,
-                                                repo: JsonCacheInfoRepository(
-                                                    databaseName:
-                                                        'mypostscache')),
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: InstaImageViewer(
+                                          disableSwipeToDismiss: false,
+                                          disposeLevel: DisposeLevel.high,
+                                          child: CachedNetworkImage(
+                                            imageUrl: post.link!,
+                                            fit: BoxFit.scaleDown,
+                                            alignment: Alignment.topLeft,
+                                            filterQuality: FilterQuality.high,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                            cacheManager: CacheManager(
+                                              Config('customCacheKey',
+                                                  stalePeriod:
+                                                      const Duration(days: 30),
+                                                  maxNrOfCacheObjects: 1000,
+                                                  repo: JsonCacheInfoRepository(
+                                                      databaseName:
+                                                          'mypostscache')),
+                                            ),
                                           ),
                                         ),
                                       )
