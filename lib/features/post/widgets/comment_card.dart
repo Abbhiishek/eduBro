@@ -15,7 +15,7 @@ class CommentCard extends ConsumerWidget {
 
   void deleteComment(WidgetRef ref, BuildContext context) async {
     // show a dialog to confirm the deletion
-    final result = await showDialog(
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Comment'),
@@ -88,16 +88,46 @@ class CommentCard extends ConsumerWidget {
                           const SizedBox(
                             width: 10,
                           ),
-                          Text(
-                            comment.createdAt.isUtc
-                                ? comment.createdAt
-                                    .toLocal()
-                                    .toString()
-                                    .substring(0, 10)
-                                : comment.createdAt.toString().substring(0, 10),
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                comment.createdAt.hour > 12
+                                    ? (comment.createdAt.hour - 12).toString()
+                                    : comment.createdAt.hour.toString(),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              const Text(
+                                ':',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              Text(
+                                comment.createdAt.minute.toString(),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              // Am or Pm
+
+                              Text(
+                                comment.createdAt.hour > 12 ? 'PM' : 'AM',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
