@@ -89,6 +89,7 @@ class PostRepository {
           .get()
           // ignore: avoid_types_on_closure_parameters (required by fpdart)
           .then(
+            // ignore: avoid_function_literals_in_foreach_calls
             (value) => value.docs.forEach(
               (element) {
                 element.reference.delete();
