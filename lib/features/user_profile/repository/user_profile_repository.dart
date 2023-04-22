@@ -61,6 +61,21 @@ class UserProfileRepository {
     }
   }
 
+  FutureVoid unFollowUser(UserModel user, String uid) async {
+    try {
+      _users.doc(uid).update({
+        'followers': FieldValue.arrayRemove([user.uid]),
+      });
+      return right(_users.doc(user.uid).update({
+        'following': FieldValue.arrayRemove([uid]),
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   Stream<List<Post>> getUserPosts(String uid) {
     return _posts
         .where('uid', isEqualTo: uid)
