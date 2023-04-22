@@ -13,7 +13,6 @@ import 'package:sensei/features/community/controller/community_controller.dart';
 import 'package:sensei/features/post/controller/post_controller.dart';
 import 'package:sensei/models/community_model.dart';
 import 'package:sensei/responsive/responsive.dart';
-import 'package:sensei/theme/pallete.dart';
 
 class AddPostTypeScreen extends ConsumerStatefulWidget {
   final String type;
@@ -132,6 +131,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     final isTypeText = widget.type == 'text';
     final isTypeLink = widget.type == 'link';
     final isLoading = ref.watch(postControllerProvider);
+    // ignore: unused_local_variable
     final currentTheme = Theme.of(context);
 
     final ispartcommunities = ref.watch(userCommunitiesProvider);
