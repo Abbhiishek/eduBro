@@ -22,9 +22,6 @@ class NotificationFeedScreen extends ConsumerWidget {
       case 'commentId':
         Routemaster.of(context).push('/post/$payloadData/comments');
         break;
-      case 'upvote_post':
-        Routemaster.of(context).push('/assignment/$payloadData');
-        break;
       default:
         Routemaster.of(context).push('/');
     }
