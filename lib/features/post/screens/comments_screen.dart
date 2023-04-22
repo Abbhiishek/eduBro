@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sensei/core/common/error_text.dart';
 import 'package:sensei/core/common/loader.dart';
-import 'package:sensei/core/common/post_card.dart';
 import 'package:sensei/features/auth/controller/auth_controller.dart';
 import 'package:sensei/features/post/controller/post_controller.dart';
 import 'package:sensei/features/post/widgets/comment_card.dart';
 import 'package:sensei/models/post_model.dart';
-import 'package:sensei/responsive/responsive.dart';
 
 class CommentsScreen extends ConsumerStatefulWidget {
   final String postId;
