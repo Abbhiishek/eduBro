@@ -2,18 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-class Notification {
+class NotificationModel {
   final String id;
   final String title;
   final String body;
   final String type;
-  final String payload;
+  final Map<String, dynamic> payload;
   final DateTime createdAt;
   final String senderId;
   final List<String> receiverId;
-  final String? image;
+  final String image;
   final bool isRead;
-  Notification({
+  NotificationModel({
     required this.id,
     required this.title,
     required this.body,
@@ -22,23 +22,23 @@ class Notification {
     required this.createdAt,
     required this.senderId,
     required this.receiverId,
-    this.image,
+    required this.image,
     required this.isRead,
   });
 
-  Notification copyWith({
+  NotificationModel copyWith({
     String? id,
     String? title,
     String? body,
     String? type,
-    String? payload,
+    Map<String, dynamic>? payload,
     DateTime? createdAt,
     String? senderId,
     List<String>? receiverId,
     String? image,
     bool? isRead,
   }) {
-    return Notification(
+    return NotificationModel(
       id: id ?? this.id,
       title: title ?? this.title,
       body: body ?? this.body,
@@ -63,49 +63,47 @@ class Notification {
     result.addAll({'createdAt': createdAt.millisecondsSinceEpoch});
     result.addAll({'senderId': senderId});
     result.addAll({'receiverId': receiverId});
-    if (image != null) {
-      result.addAll({'image': image});
-    }
+    result.addAll({'image': image});
     result.addAll({'isRead': isRead});
 
     return result;
   }
 
-  factory Notification.fromMap(Map<String, dynamic> map) {
-    return Notification(
+  factory NotificationModel.fromMap(Map<String, dynamic> map) {
+    return NotificationModel(
       id: map['id'] ?? '',
       title: map['title'] ?? '',
       body: map['body'] ?? '',
       type: map['type'] ?? '',
-      payload: map['payload'] ?? '',
+      payload: Map<String, dynamic>.from(map['payload']),
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
       senderId: map['senderId'] ?? '',
       receiverId: List<String>.from(map['receiverId']),
-      image: map['image'],
+      image: map['image'] ?? '',
       isRead: map['isRead'] ?? false,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Notification.fromJson(String source) =>
-      Notification.fromMap(json.decode(source));
+  factory NotificationModel.fromJson(String source) =>
+      NotificationModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'Notification(id: $id, title: $title, body: $body, type: $type, payload: $payload, createdAt: $createdAt, senderId: $senderId, receiverId: $receiverId, image: $image, isRead: $isRead)';
+    return 'NotificationModel(id: $id, title: $title, body: $body, type: $type, payload: $payload, createdAt: $createdAt, senderId: $senderId, receiverId: $receiverId, image: $image, isRead: $isRead)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Notification &&
+    return other is NotificationModel &&
         other.id == id &&
         other.title == title &&
         other.body == body &&
         other.type == type &&
-        other.payload == payload &&
+        mapEquals(other.payload, payload) &&
         other.createdAt == createdAt &&
         other.senderId == senderId &&
         listEquals(other.receiverId, receiverId) &&
