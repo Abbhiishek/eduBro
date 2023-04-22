@@ -8,6 +8,7 @@ class Comment {
   final DateTime createdAt;
   final String postId;
   final String username;
+  final String authorId;
   final String profilePic;
   final List<String> upVotes;
   final List<String> downVotes;
@@ -17,6 +18,7 @@ class Comment {
     required this.createdAt,
     required this.postId,
     required this.username,
+    required this.authorId,
     required this.profilePic,
     required this.upVotes,
     required this.downVotes,
@@ -28,6 +30,7 @@ class Comment {
     DateTime? createdAt,
     String? postId,
     String? username,
+    String? authorId,
     String? profilePic,
     List<String>? upVotes,
     List<String>? downVotes,
@@ -38,6 +41,7 @@ class Comment {
       createdAt: createdAt ?? this.createdAt,
       postId: postId ?? this.postId,
       username: username ?? this.username,
+      authorId: authorId ?? this.authorId,
       profilePic: profilePic ?? this.profilePic,
       upVotes: upVotes ?? this.upVotes,
       downVotes: downVotes ?? this.downVotes,
@@ -52,6 +56,7 @@ class Comment {
     result.addAll({'createdAt': createdAt.millisecondsSinceEpoch});
     result.addAll({'postId': postId});
     result.addAll({'username': username});
+    result.addAll({'authorId': authorId});
     result.addAll({'profilePic': profilePic});
     result.addAll({'upVotes': upVotes});
     result.addAll({'downVotes': downVotes});
@@ -66,6 +71,7 @@ class Comment {
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
       postId: map['postId'] ?? '',
       username: map['username'] ?? '',
+      authorId: map['authorId'] ?? '',
       profilePic: map['profilePic'] ?? '',
       upVotes: List<String>.from(map['upVotes']),
       downVotes: List<String>.from(map['downVotes']),
@@ -79,7 +85,7 @@ class Comment {
 
   @override
   String toString() {
-    return 'Comment(id: $id, text: $text, createdAt: $createdAt, postId: $postId, username: $username, profilePic: $profilePic, upVotes: $upVotes, downVotes: $downVotes)';
+    return 'Comment(id: $id, text: $text, createdAt: $createdAt, postId: $postId, username: $username, authorId: $authorId, profilePic: $profilePic, upVotes: $upVotes, downVotes: $downVotes)';
   }
 
   @override
@@ -92,6 +98,7 @@ class Comment {
         other.createdAt == createdAt &&
         other.postId == postId &&
         other.username == username &&
+        other.authorId == authorId &&
         other.profilePic == profilePic &&
         listEquals(other.upVotes, upVotes) &&
         listEquals(other.downVotes, downVotes);
@@ -104,6 +111,7 @@ class Comment {
         createdAt.hashCode ^
         postId.hashCode ^
         username.hashCode ^
+        authorId.hashCode ^
         profilePic.hashCode ^
         upVotes.hashCode ^
         downVotes.hashCode;
