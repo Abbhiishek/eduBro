@@ -35,19 +35,13 @@ class PostCard extends ConsumerWidget {
     if (post.uid == ref.watch(userProvider)!.uid) {
       return;
     } else {
-      // ref
-      //     .read(notificationControllerProvider.notifier)
-      //     .sendupVotePostNotification(
-      //       senderId: ref.watch(userProvider)!.uid,
-      //       post: post,
-      //     );
       Fluttertoast.showToast(
         msg: "Successfully Liked Post",
         toastLength: Toast.values[1],
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 4,
-        backgroundColor: Pallete.mintColor,
-        textColor: Colors.black,
+        // backgroundColor: Pallete.mintColor,
+        textColor: Colors.white,
         fontSize: 16.0,
       );
     }
@@ -264,14 +258,14 @@ class PostCard extends ConsumerWidget {
                             if (isTypeImage)
                               SizedBox(
                                 width: double.infinity,
-                                child: post.link != null
+                                child: post.link.isNotEmpty
                                     ? ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: InstaImageViewer(
                                           disableSwipeToDismiss: false,
                                           disposeLevel: DisposeLevel.high,
                                           child: CachedNetworkImage(
-                                            imageUrl: post.link!,
+                                            imageUrl: post.link,
                                             fit: BoxFit.scaleDown,
                                             alignment: Alignment.topLeft,
                                             filterQuality: FilterQuality.high,
@@ -340,7 +334,7 @@ class PostCard extends ConsumerWidget {
                                     bodyMaxLines: 30,
                                     displayDirection:
                                         UIDirection.uiDirectionHorizontal,
-                                    link: post.link!,
+                                    link: post.link,
                                   ),
                                 ),
                               ),
