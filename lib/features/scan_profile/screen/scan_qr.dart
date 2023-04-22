@@ -1,14 +1,8 @@
-import 'dart:io';
-
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:sensei/features/auth/controller/auth_controller.dart';
 import 'package:sensei/theme/pallete.dart';
 
 class ScanQrToProfile extends ConsumerStatefulWidget {
@@ -22,11 +16,8 @@ class ScanQrToProfile extends ConsumerStatefulWidget {
 class _ScanQrToProfileState extends ConsumerState<ScanQrToProfile> {
   @override
   Widget build(BuildContext context) {
-    // final user = ref.watch(userProvider)!;
     final currentTheme = ref.watch(themeNotifierProvider);
-
     late final String userid;
-
     MobileScannerController cameraController = MobileScannerController();
 
     void cameraSwitch() {
