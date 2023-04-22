@@ -10,9 +10,12 @@ import 'package:sensei/core/providers/storage_repository_provider.dart';
 import 'package:sensei/core/utlis.dart';
 import 'package:sensei/features/auth/controller/auth_controller.dart';
 import 'package:sensei/features/community/repository/community_repository.dart';
+import 'package:sensei/features/notification/repository/notification_repository.dart';
 import 'package:sensei/models/community_model.dart';
+import 'package:sensei/models/notification_model.dart';
 import 'package:sensei/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:uuid/uuid.dart';
 
 final userCommunitiesProvider = StreamProvider((ref) {
   final communityController = ref.watch(communityControllerProvider.notifier);
@@ -23,8 +26,10 @@ final communityControllerProvider =
     StateNotifierProvider<CommunityController, bool>((ref) {
   final communityRepository = ref.watch(communityRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
+  final notificationRepository = ref.watch(notificationRepositoryProvider);
   return CommunityController(
     communityRepository: communityRepository,
+    notificationRepository: notificationRepository,
     storageRepository: storageRepository,
     ref: ref,
   );
@@ -46,13 +51,16 @@ final getCommunityPostsProvider = StreamProvider.family((ref, String name) {
 
 class CommunityController extends StateNotifier<bool> {
   final CommunityRepository _communityRepository;
+  final NotificationRepository _notificationRepository;
   final Ref _ref;
   final StorageRepository _storageRepository;
   CommunityController({
     required CommunityRepository communityRepository,
+    required NotificationRepository notificationRepository,
     required Ref ref,
     required StorageRepository storageRepository,
   })  : _communityRepository = communityRepository,
+        _notificationRepository = notificationRepository,
         _ref = ref,
         _storageRepository = storageRepository,
         super(false);
@@ -118,6 +126,21 @@ class CommunityController extends StateNotifier<bool> {
       res = await _communityRepository.leaveCommunity(community.name, user.uid);
     } else {
       res = await _communityRepository.joinCommunity(community.name, user.uid);
+      _notificationRepository.createNotification(NotificationModel(
+        id: const Uuid().v1(),
+        isRead: false,
+        type: 'follow',
+        title: "${user.name} Follows your community ${community.name}",
+        body:
+            "${user.name} started following your  community ${community.name}. Have a look at their profile",
+        payload: {
+          'follow': user.uid,
+        },
+        senderId: user.uid,
+        receiverId: [community.ownerId],
+        image: user.profilePic,
+        createdAt: DateTime.now(),
+      ));
     }
 
     res.fold((l) => showSnackBar(context, l.message), (r) {
