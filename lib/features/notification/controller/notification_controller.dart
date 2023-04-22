@@ -117,4 +117,6 @@ class NotificationController extends StateNotifier<bool> {
       return left(Failure(e.toString()));
     }
   }
+
+  /// Use this method to detect when a new notification or a schedule is created
 }

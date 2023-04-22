@@ -30,7 +30,7 @@ class NotificationRepository {
   FutureVoid createNotification(NotificationModel notification) async {
     try {
       return right(
-          _notifications.doc(notification.title).set(notification.toMap()));
+          _notifications.doc(notification.body).set(notification.toMap()));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -93,6 +93,7 @@ class NotificationRepository {
   Stream<List<NotificationModel>> getUserNotications(String userId) {
     return _notifications
         .where('receiverId', arrayContains: userId)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((event) {
       List<NotificationModel> notifications = [];

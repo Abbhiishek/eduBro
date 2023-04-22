@@ -51,9 +51,24 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   fluttertoast: ^8.2.1
   awesome_notifications: ^0.7.4+1
-  awesome_notifications_fcm: ^0.7.4+1
+  flutter_native_splash: ^2.2.19
 
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/splash_black.png
+  branding: assets/images/splash_black.png
+  color_dark: "#121212"
+  image_dark: assets/images/splash_white.png
+  branding_dark: assets/images/splash_white.png
 
+  android_12:
+    image: assets/images/splash_black.png
+    icon_background_color: "#ffffff"
+    image_dark: assets/images/splash_white.png
+    icon_background_color_dark: "#121212"
+
+  web: false
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -80,6 +95,8 @@ flutter:
   assets:
     - assets/images/loginScreen.png
     - assets/images/awards/
+    - assets/images/splash_black.png
+    - assets/images/splash_white.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

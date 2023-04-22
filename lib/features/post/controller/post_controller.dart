@@ -303,6 +303,24 @@ class PostController extends StateNotifier<bool> {
       downVotes: [],
       upVotes: [],
     );
+    if (!(post.uid == user.uid)) {
+      _notificationRepository.createNotification(NotificationModel(
+        id: const Uuid().v1(),
+        isRead: false,
+        type: 'upvote_post',
+        title: "${user.name} commented on your post",
+        body:
+            "${user.name} commented on your post ${post.title} with  ${comment.text} ",
+        payload: {
+          'postId': post.id,
+        },
+        senderId: user.uid,
+        receiverId: [post.uid],
+        image: post.link,
+        createdAt: DateTime.now(),
+      ));
+    }
+
     final res = await _postRepository.addComment(comment);
 
     _ref
