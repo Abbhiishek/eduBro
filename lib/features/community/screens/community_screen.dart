@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sensei/core/common/error_text.dart';
 import 'package:sensei/core/common/loader.dart';
 import 'package:sensei/core/common/post_card.dart';
-import 'package:sensei/core/type_defs.dart';
 import 'package:sensei/features/auth/controller/auth_controller.dart';
 import 'package:sensei/features/community/controller/community_controller.dart';
 import 'package:sensei/models/community_model.dart';
