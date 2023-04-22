@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:sensei/core/common/error_text.dart';
@@ -7,6 +9,26 @@ import 'package:sensei/features/notification/controller/notification_controller.
 
 class NotificationFeedScreen extends ConsumerWidget {
   const NotificationFeedScreen({super.key});
+
+  void navigateFromNotification(
+      BuildContext context, String payload, String payloadData) {
+    switch (payload) {
+      case 'follow':
+        Routemaster.of(context).push('/u/$payloadData');
+        break;
+      case 'postId':
+        Routemaster.of(context).push('/post/$payloadData/comments');
+        break;
+      case 'commentId':
+        Routemaster.of(context).push('/post/$payloadData/comments');
+        break;
+      case 'upvote_post':
+        Routemaster.of(context).push('/assignment/$payloadData');
+        break;
+      default:
+        Routemaster.of(context).push('/');
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,8 +44,11 @@ class NotificationFeedScreen extends ConsumerWidget {
                         .watch(getnotificationControllerProvider.notifier)
                         .setNotificationToRead(data[index].title);
                     // navigate to the the payload screen
-                    final payload = data[index].payload.value;
-                    Routemaster.of(context).push(payload);
+                    final payload = data[index].payload.keys.first;
+                    print('payload: $payload');
+                    final payloadData = data[index].payload.values.first;
+                    print('payloadData: $payloadData');
+                    navigateFromNotification(context, payload, payloadData);
                   },
                   title: Text(
                     data[index].title,
@@ -39,10 +64,26 @@ class NotificationFeedScreen extends ConsumerWidget {
                   ),
                   // horizontalTitleGap: 10,
                   minVerticalPadding: 12,
-                  leading: Image.network(
-                    data[index].image,
-                    cacheHeight: 50,
-                    cacheWidth: 50,
+                  leading: CachedNetworkImage(
+                    imageUrl: data[index].image,
+                    fit: BoxFit.cover,
+                    width: 60,
+                    height: 60,
+                    useOldImageOnUrlChange: true,
+                    alignment: Alignment.topLeft,
+                    filterQuality: FilterQuality.low,
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                    cacheManager: CacheManager(
+                      Config('customCacheKey',
+                          stalePeriod: const Duration(days: 30),
+                          maxNrOfCacheObjects: 1000,
+                          repo: JsonCacheInfoRepository(
+                              databaseName: 'mypostscache')),
+                    ),
                   ),
                 );
               },
