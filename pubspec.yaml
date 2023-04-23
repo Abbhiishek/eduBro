@@ -4,19 +4,8 @@ description: A Chat Application for Students.
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+
+version: 1.0.1+1
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
@@ -48,11 +37,38 @@ dependencies:
   shared_preferences: ^2.1.0
   uuid: ^3.0.7
   any_link_preview: ^3.0.0
-  firebase_messaging: ^14.4.1
-  flutter_local_notifications: ^13.0.0
   firebase_analytics: ^10.2.1
   flutter_speed_dial: ^6.2.0
+  cached_network_image: ^3.2.3
+  flutter_cache_manager: ^3.3.0
+  path_provider: ^2.0.14
+  image_cropper: ^3.0.2
+  insta_image_viewer: ^1.0.2
+  easy_image_viewer: ^1.2.0
+  qr_flutter: ^4.0.0
+  mobile_scanner: ^3.2.0
+  liquid_swipe: ^3.1.0
+  curved_navigation_bar: ^1.0.3
+  fluttertoast: ^8.2.1
+  awesome_notifications: ^0.7.4+1
+  flutter_native_splash: ^2.2.19
 
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/images/splash_black.png
+  branding: assets/images/splash_black.png
+  color_dark: "#121212"
+  image_dark: assets/images/splash_white.png
+  branding_dark: assets/images/splash_white.png
+
+  android_12:
+    image: assets/images/splash_black.png
+    icon_background_color: "#ffffff"
+    image_dark: assets/images/splash_white.png
+    icon_background_color_dark: "#121212"
+
+  web: false
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -79,6 +95,8 @@ flutter:
   assets:
     - assets/images/loginScreen.png
     - assets/images/awards/
+    - assets/images/splash_black.png
+    - assets/images/splash_white.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

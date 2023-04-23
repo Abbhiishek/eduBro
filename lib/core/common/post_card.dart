@@ -1,14 +1,20 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:sensei/core/common/error_text.dart';
 import 'package:sensei/core/common/loader.dart';
+import 'package:sensei/core/common/user_mod_menu_button.dart';
 import 'package:sensei/core/constants/constants.dart';
 import 'package:sensei/features/auth/controller/auth_controller.dart';
 import 'package:sensei/features/community/controller/community_controller.dart';
 import 'package:sensei/features/post/controller/post_controller.dart';
 import 'package:sensei/models/post_model.dart';
+import 'package:sensei/core/common/user_not_mod_menu_button.dart';
 import 'package:sensei/responsive/responsive.dart';
 import 'package:sensei/theme/pallete.dart';
 import 'package:routemaster/routemaster.dart';
@@ -26,10 +32,36 @@ class PostCard extends ConsumerWidget {
 
   void upvotePost(WidgetRef ref) async {
     ref.read(postControllerProvider.notifier).upvote(post);
+    if (post.uid == ref.watch(userProvider)!.uid) {
+      return;
+    } else {
+      Fluttertoast.showToast(
+        msg: "Successfully Liked Post",
+        toastLength: Toast.values[1],
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 4,
+        // backgroundColor: Pallete.mintColor,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
   }
 
   void downvotePost(WidgetRef ref) async {
     ref.read(postControllerProvider.notifier).downvote(post);
+    if (post.uid == ref.watch(userProvider)!.uid) {
+      return;
+    } else {
+      Fluttertoast.showToast(
+        msg: "Successfully Disliked Post",
+        toastLength: Toast.values[1],
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 4,
+        backgroundColor: Pallete.mintColor,
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
+    }
   }
 
   void awardPost(WidgetRef ref, String award, BuildContext context) async {
@@ -65,6 +97,20 @@ class PostCard extends ConsumerWidget {
           Container(
             decoration: BoxDecoration(
               color: currentTheme.drawerTheme.backgroundColor,
+              borderRadius: BorderRadiusGeometry.lerp(
+                BorderRadius.circular(40),
+                BorderRadius.circular(40),
+                1,
+              ),
+              boxShadow: kIsWeb
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: Colors.black45.withOpacity(0.7),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
             ),
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
@@ -90,7 +136,7 @@ class PostCard extends ConsumerWidget {
                       IconButton(
                         onPressed: isGuest ? () {} : () => downvotePost(ref),
                         icon: Icon(
-                          Icons.arrow_downward,
+                          Icons.arrow_downward_outlined,
                           size: 30,
                           color: post.downvotes.contains(user.uid)
                               ? Pallete.blueColor
@@ -105,8 +151,8 @@ class PostCard extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(
                           vertical: 4,
-                          horizontal: 16,
-                        ).copyWith(right: 0),
+                          horizontal: 15,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -121,7 +167,7 @@ class PostCard extends ConsumerWidget {
                                         backgroundImage: NetworkImage(
                                           post.communityProfilePic,
                                         ),
-                                        radius: 16,
+                                        radius: 26,
                                       ),
                                     ),
                                     Padding(
@@ -131,12 +177,13 @@ class PostCard extends ConsumerWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'r/${post.communityName}',
+                                            'c/${post.communityName.toLowerCase()}',
                                             style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
+                                          const SizedBox(height: 2),
                                           GestureDetector(
                                             onTap: () =>
                                                 navigateToUser(context),
@@ -151,36 +198,32 @@ class PostCard extends ConsumerWidget {
                                     ),
                                   ],
                                 ),
-                                // if (post.uid == user.uid)
-                                //   IconButton(
-                                //     onPressed: () => deletePost(ref, context),
-                                //     icon: Icon(
-                                //       Icons.delete,
-                                //       color: Pallete.redColor,
-                                //     ),
-                                //   ),
-                                if (post.uid == user.uid)
-                                  PopupMenuButton(
-                                    icon: const Icon(Icons.more_vert),
-                                    onSelected: (value) {
-                                      // Handle menu option selection
-                                      if (value == "delete") {
-                                        // Code to delete the postcard
-                                        deletePost(ref, context);
-                                      } else if (value == "mod options") {
-                                        // Code to show mod options for the postcard
-                                      }
-                                    },
-                                    itemBuilder: (BuildContext context) => [
-                                      if (post.uid == user.uid)
-                                        const PopupMenuItem(
-                                          value: "delete",
-                                          child: Text("Delete"),
-                                        ),
-                                    ],
-                                  ),
+                                //* Menu Button for More Options for normal user and mods of the community
+                                ref
+                                    .watch(getCommunityByNameProvider(
+                                        post.communityName))
+                                    .when(
+                                      data: (data) {
+                                        // if the user is not a mod, return an empty sized box
+                                        if (!data.mods.contains(user.uid)) {
+                                          return UserNotModMenu(
+                                              post: post, user: user);
+                                        }
+                                        if (data.mods.contains(user.uid)) {
+                                          return UserModMenu(
+                                              post: post, user: user);
+                                        }
+                                        return const SizedBox();
+                                      },
+                                      error: (error, stackTrace) => ErrorText(
+                                        error: error.toString(),
+                                      ),
+                                      loading: () => const Loader(),
+                                    ),
                               ],
                             ),
+
+                            // * Awards for the post
                             if (post.awards.isNotEmpty) ...[
                               const SizedBox(height: 5),
                               SizedBox(
@@ -199,6 +242,7 @@ class PostCard extends ConsumerWidget {
                                 ),
                               ),
                             ],
+                            // * Post Title
                             Padding(
                               padding:
                                   const EdgeInsets.only(top: 20.0, bottom: 10),
@@ -210,24 +254,88 @@ class PostCard extends ConsumerWidget {
                                 ),
                               ),
                             ),
+                            // * Post Image
                             if (isTypeImage)
                               SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.3,
                                 width: double.infinity,
-                                child: Image.network(
-                                  post.link!,
-                                  fit: BoxFit.scaleDown,
-                                ),
+                                child: post.link.isNotEmpty
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: InstaImageViewer(
+                                          disableSwipeToDismiss: false,
+                                          disposeLevel: DisposeLevel.high,
+                                          child: CachedNetworkImage(
+                                            imageUrl: post.link,
+                                            fit: BoxFit.scaleDown,
+                                            alignment: Alignment.topLeft,
+                                            filterQuality: FilterQuality.high,
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                            cacheManager: CacheManager(
+                                              Config('customCacheKey',
+                                                  stalePeriod:
+                                                      const Duration(days: 30),
+                                                  maxNrOfCacheObjects: 1000,
+                                                  repo: JsonCacheInfoRepository(
+                                                      databaseName:
+                                                          'mypostscache')),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
                               ),
                             if (isTypeLink)
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 18),
-                                child: AnyLinkPreview(
-                                  displayDirection:
-                                      UIDirection.uiDirectionHorizontal,
-                                  link: post.link!,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: AnyLinkPreview(
+                                    showMultimedia: true,
+                                    // urlLaunchMode:
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.shade800
+                                            .withOpacity(0.7),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                    ],
+                                    cache: const Duration(days: 7),
+                                    bodyTextOverflow: TextOverflow.ellipsis,
+                                    backgroundColor: currentTheme.brightness ==
+                                            Brightness.dark
+                                        ? Colors.grey[900]
+                                        : Colors.grey[100],
+
+                                    titleStyle: TextStyle(
+                                      color: currentTheme.brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    bodyStyle: TextStyle(
+                                      color: currentTheme.brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                    removeElevation: false,
+                                    bodyMaxLines: 30,
+                                    displayDirection:
+                                        UIDirection.uiDirectionHorizontal,
+                                    link: post.link,
+                                  ),
                                 ),
                               ),
                             if (isTypeText)
@@ -350,9 +458,7 @@ class PostCard extends ConsumerWidget {
               ],
             ),
           ),
-          const Divider(
-            thickness: 1,
-          ),
+          const SizedBox(height: 10),
         ],
       ),
     );

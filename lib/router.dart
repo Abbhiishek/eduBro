@@ -7,9 +7,12 @@ import 'package:sensei/features/community/screens/edit_community_screen.dart';
 import 'package:sensei/features/community/screens/list_community_screen.dart';
 import 'package:sensei/features/community/screens/mod_tools_screen.dart';
 import 'package:sensei/features/home/screens/home_screen.dart';
+import 'package:sensei/features/notification/screen/notification_screen.dart';
 import 'package:sensei/features/post/screens/add_post_screen.dart';
 import 'package:sensei/features/post/screens/add_post_type_screen.dart';
 import 'package:sensei/features/post/screens/comments_screen.dart';
+import 'package:sensei/features/scan_profile/screen/scan_qr.dart';
+import 'package:sensei/features/scan_profile/screen/show_qr.dart';
 import 'package:sensei/features/user_profile/screens/edit_profile_screen.dart';
 import 'package:sensei/features/user_profile/screens/user_profile_screen.dart';
 import 'package:routemaster/routemaster.dart';
@@ -68,6 +71,15 @@ final loggedInRoute = RouteMap(
         ),
     '/community': (route) => const MaterialPage(
           child: CommunityListDrawer(),
+        ),
+    '/show-qr': (route) => const MaterialPage(
+          child: ShowProfileQr(),
+        ),
+    '/scan-qr': (route) => const MaterialPage(
+          child: ScanQrToProfile(),
+        ),
+    '/notifications': (route) => const MaterialPage(
+          child: NotificationScreen(),
         ),
   },
 );

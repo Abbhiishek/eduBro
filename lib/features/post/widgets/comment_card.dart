@@ -15,7 +15,7 @@ class CommentCard extends ConsumerWidget {
 
   void deleteComment(WidgetRef ref, BuildContext context) async {
     // show a dialog to confirm the deletion
-    final result = await showDialog(
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Comment'),
@@ -40,6 +40,14 @@ class CommentCard extends ConsumerWidget {
     );
   }
 
+  void upvoteComment(WidgetRef ref) async {
+    ref.read(postControllerProvider.notifier).upvoteComment(comment);
+  }
+
+  void downvoteComment(WidgetRef ref) async {
+    ref.read(postControllerProvider.notifier).downvoteComment(comment);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
@@ -47,7 +55,7 @@ class CommentCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 10,
-        horizontal: 4,
+        horizontal: 15,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,16 +88,46 @@ class CommentCard extends ConsumerWidget {
                           const SizedBox(
                             width: 10,
                           ),
-                          Text(
-                            comment.createdAt.isUtc
-                                ? comment.createdAt
-                                    .toLocal()
-                                    .toString()
-                                    .substring(0, 10)
-                                : comment.createdAt.toString().substring(0, 10),
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                comment.createdAt.hour > 12
+                                    ? (comment.createdAt.hour - 12).toString()
+                                    : comment.createdAt.hour.toString(),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              const Text(
+                                ':',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              Text(
+                                comment.createdAt.minute.toString(),
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              // Am or Pm
+
+                              Text(
+                                comment.createdAt.hour > 12 ? 'PM' : 'AM',
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -106,29 +144,34 @@ class CommentCard extends ConsumerWidget {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
+                                    onPressed: () => upvoteComment(ref),
+                                    icon: Icon(
                                       Icons.thumb_up_alt_outlined,
-                                      size: 20,
-                                      color: Colors.grey,
+                                      size: 18,
+                                      color: !comment.upVotes.contains(user.uid)
+                                          ? Colors.grey
+                                          : Colors.blue,
                                     ),
                                   ),
                                   Text(
-                                    comment.upVotes.toString(),
+                                    comment.upVotes.length.toString(),
                                     style: const TextStyle(
                                       color: Colors.grey,
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
+                                    onPressed: () => downvoteComment(ref),
+                                    icon: Icon(
                                       Icons.thumb_down_alt_outlined,
                                       size: 20,
-                                      color: Colors.grey,
+                                      color:
+                                          comment.downVotes.contains(user.uid)
+                                              ? Pallete.redColor
+                                              : Colors.grey,
                                     ),
                                   ),
                                   Text(
-                                    comment.upVotes.toString(),
+                                    comment.downVotes.length.toString(),
                                     style: const TextStyle(
                                       color: Colors.grey,
                                     ),

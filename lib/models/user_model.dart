@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 class UserModel {
@@ -13,13 +15,14 @@ class UserModel {
   final String bio;
   final String username;
   final int level;
-  final Map<String, dynamic> posts;
-  final Map<String, dynamic> replies;
-  final Map<String, dynamic> subjects;
-  final Map<String, dynamic> communities;
-  final Map<String, dynamic> followers;
-  final Map<String, dynamic> following;
-  final Map<String, dynamic> notifications;
+  final List<String> posts;
+  final List<String> comments;
+  final List<String> topics;
+  final List<String> communities;
+  final List<String> followers;
+  final List<String> following;
+  final List<String> notifications;
+  final List<String> savedPosts;
   UserModel({
     required this.id,
     required this.name,
@@ -34,12 +37,13 @@ class UserModel {
     required this.username,
     required this.level,
     required this.posts,
-    required this.replies,
-    required this.subjects,
+    required this.comments,
+    required this.topics,
     required this.communities,
     required this.followers,
     required this.following,
     required this.notifications,
+    required this.savedPosts,
   });
 
   UserModel copyWith({
@@ -55,13 +59,14 @@ class UserModel {
     String? bio,
     String? username,
     int? level,
-    Map<String, dynamic>? posts,
-    Map<String, dynamic>? replies,
-    Map<String, dynamic>? subjects,
-    Map<String, dynamic>? communities,
-    Map<String, dynamic>? followers,
-    Map<String, dynamic>? following,
-    Map<String, dynamic>? notifications,
+    List<String>? posts,
+    List<String>? comments,
+    List<String>? topics,
+    List<String>? communities,
+    List<String>? followers,
+    List<String>? following,
+    List<String>? notifications,
+    List<String>? savedPosts,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -77,12 +82,13 @@ class UserModel {
       username: username ?? this.username,
       level: level ?? this.level,
       posts: posts ?? this.posts,
-      replies: replies ?? this.replies,
-      subjects: subjects ?? this.subjects,
+      comments: comments ?? this.comments,
+      topics: topics ?? this.topics,
       communities: communities ?? this.communities,
       followers: followers ?? this.followers,
       following: following ?? this.following,
       notifications: notifications ?? this.notifications,
+      savedPosts: savedPosts ?? this.savedPosts,
     );
   }
 
@@ -102,12 +108,13 @@ class UserModel {
     result.addAll({'username': username});
     result.addAll({'level': level});
     result.addAll({'posts': posts});
-    result.addAll({'replies': replies});
-    result.addAll({'subjects': subjects});
+    result.addAll({'comments': comments});
+    result.addAll({'topics': topics});
     result.addAll({'communities': communities});
     result.addAll({'followers': followers});
     result.addAll({'following': following});
     result.addAll({'notifications': notifications});
+    result.addAll({'savedPosts': savedPosts});
 
     return result;
   }
@@ -126,19 +133,20 @@ class UserModel {
       bio: map['bio'] ?? '',
       username: map['username'] ?? '',
       level: map['level']?.toInt() ?? 0,
-      posts: Map<String, dynamic>.from(map['posts']),
-      replies: Map<String, dynamic>.from(map['replies']),
-      subjects: Map<String, dynamic>.from(map['subjects']),
-      communities: Map<String, dynamic>.from(map['communities']),
-      followers: Map<String, dynamic>.from(map['followers']),
-      following: Map<String, dynamic>.from(map['following']),
-      notifications: Map<String, dynamic>.from(map['notifications']),
+      posts: List<String>.from(map['posts']),
+      comments: List<String>.from(map['comments']),
+      topics: List<String>.from(map['topics']),
+      communities: List<String>.from(map['communities']),
+      followers: List<String>.from(map['followers']),
+      following: List<String>.from(map['following']),
+      notifications: List<String>.from(map['notifications']),
+      savedPosts: List<String>.from(map['savedPosts']),
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(id: $id, name: $name, email: $email, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, bio: $bio, username: $username, level: $level, posts: $posts, replies: $replies, subjects: $subjects, communities: $communities, followers: $followers, following: $following, notifications: $notifications)';
+    return 'UserModel(id: $id, name: $name, email: $email, profilePic: $profilePic, banner: $banner, uid: $uid, isAuthenticated: $isAuthenticated, karma: $karma, awards: $awards, bio: $bio, username: $username, level: $level, posts: $posts, comments: $comments, topics: $topics, communities: $communities, followers: $followers, following: $following, notifications: $notifications, savedPosts: $savedPosts)';
   }
 
   @override
@@ -158,13 +166,14 @@ class UserModel {
         other.bio == bio &&
         other.username == username &&
         other.level == level &&
-        mapEquals(other.posts, posts) &&
-        mapEquals(other.replies, replies) &&
-        mapEquals(other.subjects, subjects) &&
-        mapEquals(other.communities, communities) &&
-        mapEquals(other.followers, followers) &&
-        mapEquals(other.following, following) &&
-        mapEquals(other.notifications, notifications);
+        listEquals(other.posts, posts) &&
+        listEquals(other.comments, comments) &&
+        listEquals(other.topics, topics) &&
+        listEquals(other.communities, communities) &&
+        listEquals(other.followers, followers) &&
+        listEquals(other.following, following) &&
+        listEquals(other.notifications, notifications) &&
+        listEquals(other.savedPosts, savedPosts);
   }
 
   @override
@@ -182,11 +191,12 @@ class UserModel {
         username.hashCode ^
         level.hashCode ^
         posts.hashCode ^
-        replies.hashCode ^
-        subjects.hashCode ^
+        comments.hashCode ^
+        topics.hashCode ^
         communities.hashCode ^
         followers.hashCode ^
         following.hashCode ^
-        notifications.hashCode;
+        notifications.hashCode ^
+        savedPosts.hashCode;
   }
 }

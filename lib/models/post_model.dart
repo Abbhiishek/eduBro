@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 class Post {
   final String id;
   final String title;
-  final String? link;
+  final String link;
   final String? description;
   final String communityName;
   final String communityProfilePic;
@@ -15,11 +17,10 @@ class Post {
   final String type;
   final DateTime createdAt;
   final List<String> awards;
-
   Post({
     required this.id,
     required this.title,
-    this.link,
+    required this.link,
     this.description,
     required this.communityName,
     required this.communityProfilePic,
@@ -72,9 +73,7 @@ class Post {
 
     result.addAll({'id': id});
     result.addAll({'title': title});
-    if (link != null) {
-      result.addAll({'link': link});
-    }
+    result.addAll({'link': link});
     if (description != null) {
       result.addAll({'description': description});
     }
@@ -96,7 +95,7 @@ class Post {
     return Post(
       id: map['id'] ?? '',
       title: map['title'] ?? '',
-      link: map['link'],
+      link: map['link'] ?? '',
       description: map['description'],
       communityName: map['communityName'] ?? '',
       communityProfilePic: map['communityProfilePic'] ?? '',
@@ -111,9 +110,13 @@ class Post {
     );
   }
 
+  String toJson() => json.encode(toMap());
+
+  factory Post.fromJson(String source) => Post.fromMap(json.decode(source));
+
   @override
   String toString() {
-    return 'PostModel(id: $id, title: $title, link: $link, description: $description, communityName: $communityName, communityProfilePic: $communityProfilePic, upvotes: $upvotes, downvotes: $downvotes, commentCount: $commentCount, username: $username, uid: $uid, type: $type, createdAt: $createdAt, awards: $awards)';
+    return 'Post(id: $id, title: $title, link: $link, description: $description, communityName: $communityName, communityProfilePic: $communityProfilePic, upvotes: $upvotes, downvotes: $downvotes, commentCount: $commentCount, username: $username, uid: $uid, type: $type, createdAt: $createdAt, awards: $awards)';
   }
 
   @override

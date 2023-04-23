@@ -6,10 +6,12 @@ import 'package:sensei/core/enums/enums.dart';
 import 'package:sensei/core/providers/storage_repository_provider.dart';
 import 'package:sensei/core/utlis.dart';
 import 'package:sensei/features/auth/controller/auth_controller.dart';
+import 'package:sensei/features/notification/repository/notification_repository.dart';
 import 'package:sensei/features/post/repository/post_repository.dart';
 import 'package:sensei/features/user_profile/controller/user_profile_controller.dart';
 import 'package:sensei/models/comment_model.dart';
 import 'package:sensei/models/community_model.dart';
+import 'package:sensei/models/notification_model.dart';
 import 'package:sensei/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
@@ -18,8 +20,10 @@ final postControllerProvider =
     StateNotifierProvider<PostController, bool>((ref) {
   final postRepository = ref.watch(postRepositoryProvider);
   final storageRepository = ref.watch(storageRepositoryProvider);
+  final notificationRepository = ref.watch(notificationRepositoryProvider);
   return PostController(
     postRepository: postRepository,
+    notificationRepository: notificationRepository,
     storageRepository: storageRepository,
     ref: ref,
   );
@@ -31,9 +35,9 @@ final userPostsProvider =
   return postController.fetchUserPosts(communities);
 });
 
-final guestPostsProvider = StreamProvider((ref) {
+final explorePostsProvider = StreamProvider((ref) {
   final postController = ref.watch(postControllerProvider.notifier);
-  return postController.fetchGuestPosts();
+  return postController.fetchExplorePosts();
 });
 
 final getPostByIdProvider = StreamProvider.family((ref, String postId) {
@@ -48,13 +52,16 @@ final getPostCommentsProvider = StreamProvider.family((ref, String postId) {
 
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
+  final NotificationRepository _notificationRepository;
   final Ref _ref;
   final StorageRepository _storageRepository;
   PostController({
     required PostRepository postRepository,
+    required NotificationRepository notificationRepository,
     required Ref ref,
     required StorageRepository storageRepository,
   })  : _postRepository = postRepository,
+        _notificationRepository = notificationRepository,
         _ref = ref,
         _storageRepository = storageRepository,
         super(false);
@@ -80,12 +87,14 @@ class PostController extends StateNotifier<bool> {
       username: user.name,
       uid: user.uid,
       type: 'text',
+      link: '',
       createdAt: DateTime.now(),
       awards: [],
       description: description,
     );
 
     final res = await _postRepository.addPost(post);
+    await _postRepository.addPostToUser(post, user.uid);
     _ref
         .read(userProfileControllerProvider.notifier)
         .updateUserKarma(UserKarma.textPost);
@@ -123,6 +132,7 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+    await _postRepository.addPostToUser(post, user.uid);
     _ref
         .read(userProfileControllerProvider.notifier)
         .updateUserKarma(UserKarma.linkPost);
@@ -168,6 +178,8 @@ class PostController extends StateNotifier<bool> {
       );
 
       final res = await _postRepository.addPost(post);
+      // add the post id to user posts list
+      await _postRepository.addPostToUser(post, user.uid);
       _ref
           .read(userProfileControllerProvider.notifier)
           .updateUserKarma(UserKarma.imagePost);
@@ -186,8 +198,8 @@ class PostController extends StateNotifier<bool> {
     return Stream.value([]);
   }
 
-  Stream<List<Post>> fetchGuestPosts() {
-    return _postRepository.fetchGuestPosts();
+  Stream<List<Post>> fetchExplorePosts() {
+    return _postRepository.fetchExplorePosts();
   }
 
   void deletePost(Post post, BuildContext context) async {
@@ -195,6 +207,7 @@ class PostController extends StateNotifier<bool> {
     _ref
         .read(userProfileControllerProvider.notifier)
         .updateUserKarma(UserKarma.deletePost);
+
     res.fold((l) => null,
         (r) => showSnackBar(context, 'Post Deleted successfully!'));
   }
@@ -209,13 +222,63 @@ class PostController extends StateNotifier<bool> {
   }
 
   void upvote(Post post) async {
-    final uid = _ref.read(userProvider)!.uid;
-    _postRepository.upvote(post, uid);
+    final sender = _ref.read(userProvider);
+    _postRepository.upvote(post, sender!.uid);
+    // only send notification if the post is not by the user
+    if (post.uid != sender.uid) {
+      // also check if the user has already upvoted the post or not to avoid sending multiple notifications
+      if (!post.upvotes.contains(sender.uid)) {
+        _notificationRepository.createNotification(NotificationModel(
+          id: const Uuid().v1(),
+          isRead: false,
+          type: 'upvote_post',
+          title: "${sender.name} Liked your post",
+          body:
+              "${sender.name} liked your post ${post.title} with  ${post.upvotes.length + 1} likes",
+          payload: {
+            'postId': post.id,
+          },
+          senderId: sender.uid,
+          receiverId: [post.uid],
+          image: post.link,
+          createdAt: DateTime.now(),
+        ));
+      }
+    }
   }
 
   void downvote(Post post) async {
     final uid = _ref.read(userProvider)!.uid;
     _postRepository.downvote(post, uid);
+  }
+
+  void upvoteComment(Comment comment) async {
+    final sender = _ref.read(userProvider);
+    _postRepository.upvoteComment(comment, _ref.read(userProvider)!.uid);
+    if (comment.postId != sender!.uid) {
+      // also check if the user has already upvoted the post or not to avoid sending multiple notifications
+      if (!comment.upVotes.contains(sender.uid)) {
+        _notificationRepository.createNotification(NotificationModel(
+          id: const Uuid().v1(),
+          isRead: false,
+          type: 'like_comment',
+          title: "${sender.name} liked  your comment",
+          body:
+              "${sender.name} liked your comment ${comment.text} with  ${comment.upVotes.length + 1} likes",
+          payload: {
+            'commentId': comment.postId,
+          },
+          senderId: sender.uid,
+          receiverId: [comment.authorId],
+          image: comment.profilePic,
+          createdAt: DateTime.now(),
+        ));
+      }
+    }
+  }
+
+  void downvoteComment(Comment comment) async {
+    _postRepository.downvoteComment(comment, _ref.read(userProvider)!.uid);
   }
 
   Stream<Post> getPostById(String postId) {
@@ -236,10 +299,30 @@ class PostController extends StateNotifier<bool> {
       postId: post.id,
       username: user.name,
       profilePic: user.profilePic,
-      downVotes: 0,
-      upVotes: 0,
+      authorId: user.uid,
+      downVotes: [],
+      upVotes: [],
     );
+    if (!(post.uid == user.uid)) {
+      _notificationRepository.createNotification(NotificationModel(
+        id: const Uuid().v1(),
+        isRead: false,
+        type: 'upvote_post',
+        title: "${user.name} commented on your post",
+        body:
+            "${user.name} commented on your post ${post.title} with  ${comment.text} ",
+        payload: {
+          'postId': post.id,
+        },
+        senderId: user.uid,
+        receiverId: [post.uid],
+        image: post.link,
+        createdAt: DateTime.now(),
+      ));
+    }
+
     final res = await _postRepository.addComment(comment);
+
     _ref
         .read(userProfileControllerProvider.notifier)
         .updateUserKarma(UserKarma.comment);

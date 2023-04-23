@@ -70,15 +70,16 @@ class AuthRepository {
             'thankyou'
           ],
           bio: 'We love to code 😎',
-          username: '${userCredential.user!.displayName ?? ''}+',
+          username: userCredential.user!.uid,
           level: 0,
-          posts: {},
-          replies: {},
-          subjects: {},
-          communities: {},
-          followers: {},
-          following: {},
-          notifications: {},
+          posts: [],
+          comments: [],
+          topics: [],
+          communities: [],
+          followers: [],
+          following: [],
+          notifications: [],
+          savedPosts: [],
         );
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       } else {

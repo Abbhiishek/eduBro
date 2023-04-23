@@ -37,6 +37,18 @@ class PostRepository {
     }
   }
 
+  FutureVoid addPostToUser(Post post, String userId) async {
+    try {
+      return right(_users.doc(userId).update({
+        'posts': FieldValue.arrayUnion([post.id]),
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   Stream<List<Post>> fetchUserPosts(List<Community> communities) {
     return _posts
         .where('communityName',
@@ -54,10 +66,10 @@ class PostRepository {
         );
   }
 
-  Stream<List<Post>> fetchGuestPosts() {
+  Stream<List<Post>> fetchExplorePosts() {
     return _posts
         .orderBy('createdAt', descending: true)
-        .limit(10)
+        .limit(100)
         .snapshots()
         .map(
           (event) => event.docs
@@ -75,9 +87,18 @@ class PostRepository {
       _comments
           .where('postId', isEqualTo: post.id)
           .get()
-          .then((value) => value.docs.forEach((element) {
+          // ignore: avoid_types_on_closure_parameters (required by fpdart)
+          .then(
+            // ignore: avoid_function_literals_in_foreach_calls
+            (value) => value.docs.forEach(
+              (element) {
                 element.reference.delete();
-              }));
+              },
+            ),
+          );
+      _users.doc(post.uid).update({
+        'posts': FieldValue.arrayRemove([post.id]),
+      });
       return right(_posts.doc(post.id).delete());
     } on FirebaseException catch (e) {
       throw e.message!;
@@ -135,6 +156,42 @@ class PostRepository {
     }
   }
 
+  void upvoteComment(Comment comment, String userId) async {
+    if (comment.downVotes.contains(userId)) {
+      _comments.doc(comment.id).update({
+        'downVotes': FieldValue.arrayRemove([userId]),
+      });
+    }
+
+    if (comment.upVotes.contains(userId)) {
+      _comments.doc(comment.id).update({
+        'upVotes': FieldValue.arrayRemove([userId]),
+      });
+    } else {
+      _comments.doc(comment.id).update({
+        'upVotes': FieldValue.arrayUnion([userId]),
+      });
+    }
+  }
+
+  downvoteComment(Comment comment, String userId) async {
+    if (comment.upVotes.contains(userId)) {
+      _comments.doc(comment.id).update({
+        'upVotes': FieldValue.arrayRemove([userId]),
+      });
+    }
+
+    if (comment.downVotes.contains(userId)) {
+      _comments.doc(comment.id).update({
+        'downVotes': FieldValue.arrayRemove([userId]),
+      });
+    } else {
+      _comments.doc(comment.id).update({
+        'downVotes': FieldValue.arrayUnion([userId]),
+      });
+    }
+  }
+
   Stream<Post> getPostById(String postId) {
     return _posts
         .doc(postId)
@@ -145,7 +202,6 @@ class PostRepository {
   FutureVoid addComment(Comment comment) async {
     try {
       await _comments.doc(comment.id).set(comment.toMap());
-
       return right(_posts.doc(comment.postId).update({
         'commentCount': FieldValue.increment(1),
       }));

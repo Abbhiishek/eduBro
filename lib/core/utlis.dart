@@ -28,3 +28,20 @@ Future<FilePickerResult?> pickImage() async {
 
   return image;
 }
+
+Future<FilePickerResult?> captureImage() async {
+  final image = await FilePicker.platform.pickFiles(
+    type: FileType.media,
+    allowCompression: true,
+    withData: true,
+    lockParentWindow: true,
+    onFileLoading: (p0) {
+      const ActionChip(
+        label: Text('Loading...'),
+        // backgroundColor: Colors.grey,
+      );
+    },
+  );
+
+  return image;
+}

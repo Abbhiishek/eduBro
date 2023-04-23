@@ -25,7 +25,50 @@ class UserProfileRepository {
 
   FutureVoid editProfile(UserModel user) async {
     try {
+      // check if the username passed is already taken
+      var userDoc = await _users.doc(user.uid).get();
+      if (userDoc.exists) {
+        var usernameDoc = await _users
+            .where('username', isEqualTo: user.username)
+            .where('uid', isNotEqualTo: user.uid)
+            .get();
+        if (usernameDoc.docs.isNotEmpty) {
+          throw 'Username already taken!';
+        }
+      }
       return right(_users.doc(user.uid).update(user.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  // * Follow and Unfollow User
+
+  FutureVoid followUser(UserModel user, String uid) async {
+    try {
+      _users.doc(uid).update({
+        'followers': FieldValue.arrayUnion([user.uid]),
+      });
+      return right(_users.doc(user.uid).update({
+        'following': FieldValue.arrayUnion([uid]),
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid unFollowUser(UserModel user, String uid) async {
+    try {
+      _users.doc(uid).update({
+        'followers': FieldValue.arrayRemove([user.uid]),
+      });
+      return right(_users.doc(user.uid).update({
+        'following': FieldValue.arrayRemove([uid]),
+      }));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
