@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:sensei/core/constants/firebase_constants.dart';
-import 'package:sensei/core/enums/enums.dart';
 import 'package:sensei/core/failure.dart';
 import 'package:sensei/core/type_defs.dart';
 import 'package:sensei/models/post_model.dart';
