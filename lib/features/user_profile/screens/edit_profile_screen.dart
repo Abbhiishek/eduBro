@@ -12,7 +12,6 @@ import 'package:sensei/core/utlis.dart';
 import 'package:sensei/features/auth/controller/auth_controller.dart';
 import 'package:sensei/features/user_profile/controller/user_profile_controller.dart';
 import 'package:sensei/responsive/responsive.dart';
-import 'package:sensei/theme/pallete.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   final String uid;
