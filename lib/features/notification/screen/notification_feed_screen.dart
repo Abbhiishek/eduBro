@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
@@ -39,12 +40,10 @@ class NotificationFeedScreen extends ConsumerWidget {
                     // get the notification to mark it as read
                     ref
                         .watch(getnotificationControllerProvider.notifier)
-                        .setNotificationToRead(data[index].title);
+                        .setNotificationToRead(data[index].body);
                     // navigate to the the payload screen
                     final payload = data[index].payload.keys.first;
-                    print('payload: $payload');
                     final payloadData = data[index].payload.values.first;
-                    print('payloadData: $payloadData');
                     navigateFromNotification(context, payload, payloadData);
                   },
                   title: Text(
@@ -61,27 +60,38 @@ class NotificationFeedScreen extends ConsumerWidget {
                   ),
                   // horizontalTitleGap: 10,
                   minVerticalPadding: 12,
-                  leading: CachedNetworkImage(
-                    imageUrl: data[index].image,
-                    fit: BoxFit.cover,
-                    width: 60,
-                    height: 60,
-                    useOldImageOnUrlChange: true,
-                    alignment: Alignment.topLeft,
-                    filterQuality: FilterQuality.low,
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    cacheManager: CacheManager(
-                      Config('customCacheKey',
-                          stalePeriod: const Duration(days: 30),
-                          maxNrOfCacheObjects: 1000,
-                          repo: JsonCacheInfoRepository(
-                              databaseName: 'mypostscache')),
+                  leading: (data[index].image != '')
+                      ? CircleAvatar(
+                          backgroundImage: CachedNetworkImageProvider(
+                            data[index].image,
+                          ),
+                          radius: 30,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: data[index].isRead
+                                  ? Colors.transparent.withOpacity(0.5)
+                                  : Colors.transparent,
+                            ),
+                          ))
+                      : Icon(
+                          Icons.notifications,
+                          size: 30,
+                          color: data[index].isRead
+                              ? Colors.cyan.withOpacity(0.5)
+                              : Colors.cyan,
+                        ),
+                  trailing: Text(
+                    DateFormat('dd MMMM y').format(data[index].createdAt),
+                    style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: data[index].isRead
+                          ? FontWeight.w100
+                          : FontWeight.w600,
                     ),
                   ),
+                  enableFeedback: true,
+                  isThreeLine: true,
                 );
               },
             );
