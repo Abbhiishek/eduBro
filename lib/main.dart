@@ -5,16 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:sensei/core/common/error_text.dart';
 import 'package:sensei/core/common/loader.dart';
-import 'package:sensei/core/type_defs.dart';
 import 'package:sensei/features/auth/controller/auth_controller.dart';
-import 'package:sensei/features/notification/controller/notification_controller.dart';
 import 'package:sensei/models/user_model.dart';
 import 'package:sensei/router.dart';
 import 'package:sensei/theme/pallete.dart';
 import 'package:sensei/firebase_options.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-
-import 'features/notification/pushnotification/observeUserNotification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +19,6 @@ void main() async {
   );
 
   AwesomeNotifications().initialize(
-      // set the icon to null if you want to use the default app icon
       null,
       [
         NotificationChannel(
@@ -67,15 +62,6 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   void initState() {
-    // Only after at least the action method is set, the notification events are delivered
-    // AwesomeNotifications().setListeners(
-    //   onActionReceivedMethod: NotificationController.onActionReceivedMethod,
-    //   onNotificationCreatedMethod:
-    //       NotificationController.onNotificationCreatedMethod,
-    //   onNotificationDisplayedMethod:
-    //       NotificationController.onNotificationDisplayedMethod,
-    // );
-
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
       if (!isAllowed) {
         AwesomeNotifications().requestPermissionToSendNotifications();
@@ -87,7 +73,6 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // MyApp.context = context; // Set the context variable in the build method
     return ref.watch(authStateChangeProvider).when(
           data: (data) => MaterialApp.router(
             title: 'Sensei',
@@ -109,26 +94,4 @@ class _MyAppState extends ConsumerState<MyApp> {
           loading: () => const Loader(),
         );
   }
-
-  // void pushNotification() {
-  //   ref.watch(userNotificationsProvider).when(
-  //         data: (data) {
-  //           if (data.isNotEmpty) {
-  //             AwesomeNotifications().createNotification(
-  //                 content: NotificationContent(
-  //               id: data.length,
-  //               channelKey: 'sensei',
-  //               title: data[0].title,
-  //               body: data[0].body,
-  //               actionType: ActionType.Default,
-  //               notificationLayout: NotificationLayout.BigPicture,
-  //               bigPicture: data[0].image,
-  //               showWhen: true,
-  //             ));
-  //           }
-  //         },
-  //         error: (error, stackTrace) => ErrorText(error: error.toString()),
-  //         loading: () => const Loader(),
-  //       );
-  // }
 }
