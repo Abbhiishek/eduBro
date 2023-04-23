@@ -109,7 +109,7 @@ class UserProfileController extends StateNotifier<bool> {
   void followUser(String uid) async {
     UserModel user = _ref.read(userProvider)!;
     Either<Failure, void> res;
-    if (user.following.contains(uid)) {
+    if (!user.following.contains(uid)) {
       res = await _userProfileRepository.followUser(user, uid);
     } else {
       res = await _userProfileRepository.unFollowUser(user, uid);
